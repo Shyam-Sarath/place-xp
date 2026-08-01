@@ -1,0 +1,35 @@
+# dependencies
+/club-site/node_modules
+/club-site/.pnp
+club-site/.pnp.*
+/club-site/.yarn/*
+
+# testing
+/club-site/coverage
+
+# next.js
+/club-site/.next/
+/club-site/out/
+
+# production
+/club-site/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+/club-site/.env*
+
+# vercel
+/club-site/.vercel
+
+# typescript
+/club-site/*.tsbuildinfo
+/club-site/next-env.d.ts
+
+# misc
+.DS_Store
+*.pem
