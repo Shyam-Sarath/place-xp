@@ -15,6 +15,8 @@ interface GooeyNavProps {
   timeVariance?: number;
   colors?: number[];
   initialActiveIndex?: number;
+  activeIndex?: number;
+  onActiveIndexChange?: (index: number) => void;
 }
 
 const GooeyNav = ({
@@ -25,13 +27,17 @@ const GooeyNav = ({
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0
+  initialActiveIndex = 0,
+  activeIndex: controlledActiveIndex,
+  onActiveIndexChange
 }: GooeyNavProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
   const filterRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
-  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
+  const [localActiveIndex, setLocalActiveIndex] = useState(initialActiveIndex);
+
+  const activeIndex = controlledActiveIndex !== undefined ? controlledActiveIndex : localActiveIndex;
 
   const noise = (n = 1) => n / 2 - Math.random() * n;
 
@@ -113,7 +119,9 @@ const GooeyNav = ({
     const liEl = e.currentTarget.parentElement;
     if (activeIndex === index || !liEl) return;
 
-    setActiveIndex(index);
+    if (controlledActiveIndex === undefined) {
+      setLocalActiveIndex(index);
+    }
     updateEffectPosition(liEl);
 
     if (filterRef.current) {
@@ -130,6 +138,8 @@ const GooeyNav = ({
     if (filterRef.current) {
       makeParticles(filterRef.current);
     }
+
+    onActiveIndexChange?.(index);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, index: number) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import GooeyNav from '@/components/reactbits/GooeyNav';
@@ -11,20 +11,97 @@ const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Impact', href: '#impact' },
   { label: 'Events', href: '#events' },
-  { label: 'Team', href: '#team' },
   { label: 'Recruitment', href: '#recruitment' },
+  { label: 'Team', href: '#team' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  const isClickScrolling = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleNavClick = (index: number) => {
+    isClickScrolling.current = true;
+    setActiveIndex(index);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 1300); // 1.2s smooth scroll duration + padding
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+
+      // Explicitly highlight Team (index 4) when at the very bottom of the page
+      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50;
+      if (isAtBottom && !isClickScrolling.current) {
+        setActiveIndex(4);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sectionIds = ['hero', 'about', 'impact', 'events', 'recruitment', 'team'];
+    const sectionToIndex: Record<string, number> = {
+      hero: 0,
+      about: 0,
+      impact: 1,
+      events: 2,
+      recruitment: 3,
+      team: 4,
+    };
+
+    const entriesMap: Record<string, IntersectionObserverEntry> = {};
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      if (isClickScrolling.current) return;
+
+      entries.forEach((entry) => {
+        entriesMap[entry.target.id] = entry;
+      });
+
+      let maxVisibleHeight = 0;
+      let activeId = '';
+
+      Object.values(entriesMap).forEach((entry) => {
+        if (entry.isIntersecting) {
+          const height = entry.intersectionRect.height;
+          if (height > maxVisibleHeight) {
+            maxVisibleHeight = height;
+            activeId = entry.target.id;
+          }
+        }
+      });
+
+      if (activeId && sectionToIndex[activeId] !== undefined) {
+        setActiveIndex(sectionToIndex[activeId]);
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null, // viewport
+      threshold: Array.from({ length: 21 }, (_, i) => i * 0.05), // 0, 0.05, ..., 1.0
+    });
+
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -63,7 +140,8 @@ export default function Navbar() {
               particleCount={15}
               particleDistances={[90, 10]}
               particleR={100}
-              initialActiveIndex={0}
+              activeIndex={activeIndex}
+              onActiveIndexChange={handleNavClick}
             />
           </div>
 
@@ -98,8 +176,8 @@ export default function Navbar() {
             { label: 'home', href: '#hero', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
             { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
             { label: 'events', href: '#events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
             { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
           ]}
           onMenuClick={(open) => setMobileOpen(open)}
         />
