@@ -8,8 +8,18 @@ import Recruitment from '@/components/sections/Recruitment';
 import Gallery from '@/components/sections/Gallery';
 import Team from '@/components/sections/Team';
 import Footer from '@/components/sections/Footer';
+import { createClient } from '@/lib/supabase/server';
+import type { EventRow } from '@/types/database';
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'upcoming')
+    .order('event_date', { ascending: true })
+    .limit(3);
+
   return (
     <main className="relative">
       <Navbar />
@@ -17,7 +27,7 @@ export default function Home() {
       <About />
       <Impact />
       <WhyJoin />
-      <Events />
+      <Events events={(data ?? []) as EventRow[]} />
       <Recruitment />
       <Gallery />
       <Team />

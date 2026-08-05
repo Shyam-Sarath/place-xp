@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Mail, MapPin } from 'lucide-react';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -45,7 +46,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <a href="#hero" className="flex items-center gap-3 mb-5">
+            <Link href="/" className="flex items-center gap-3 mb-5">
               <Image
                 src="/logo.png"
                 alt="Place XP Logo"
@@ -56,7 +57,7 @@ export default function Footer() {
               <span className="text-base font-semibold tracking-tight">
                 Place <span className="text-orange-500">XP</span>
               </span>
-            </a>
+            </Link>
             <p className="text-sm text-text-muted leading-relaxed mb-5">
               VIT Chennai&apos;s official placement-focused technical club.
               Building industry-ready professionals.

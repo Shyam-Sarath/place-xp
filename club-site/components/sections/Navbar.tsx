@@ -1,108 +1,85 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
+import type { User } from '@supabase/supabase-js';
 import GooeyNav from '@/components/reactbits/GooeyNav';
 import BubbleMenu from '@/components/reactbits/BubbleMenu';
 import MagneticButton from '@/components/ui/MagneticButton';
-
-const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Impact', href: '#impact' },
-  { label: 'Events', href: '#events' },
-  { label: 'Recruitment', href: '#recruitment' },
-  { label: 'Team', href: '#team' },
-];
+import { createClient } from '@/lib/supabase/client';
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  
-  const isClickScrolling = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
-  const handleNavClick = (index: number) => {
-    isClickScrolling.current = true;
-    setActiveIndex(index);
+  const isHome = pathname === '/';
 
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    scrollTimeoutRef.current = setTimeout(() => {
-      isClickScrolling.current = false;
-    }, 1300); // 1.2s smooth scroll duration + padding
-  };
+  const navLinks = [
+    { label: 'About', href: isHome ? '#about' : '/#about' },
+    { label: 'Impact', href: isHome ? '#impact' : '/#impact' },
+    { label: 'Events', href: isHome ? '#events' : '/events' },
+    { label: 'Team', href: isHome ? '#team' : '/#team' },
+    { label: 'Recruitment', href: isHome ? '#recruitment' : '/#recruitment' },
+  ];
 
   useEffect(() => {
+    if (!isHome) {
+      if (pathname.startsWith('/events')) {
+        setActiveIndex(2);
+      }
+      return;
+    }
+
+    const sectionIds = ['about', 'impact', 'events', 'team', 'recruitment'];
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      // Explicitly highlight Team (index 4) when at the very bottom of the page
-      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50;
-      if (isAtBottom && !isClickScrolling.current) {
-        setActiveIndex(4);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      const scrollPosition = window.scrollY + 250;
 
-  useEffect(() => {
-    const sectionIds = ['hero', 'about', 'impact', 'events', 'recruitment', 'team'];
-    const sectionToIndex: Record<string, number> = {
-      hero: 0,
-      about: 0,
-      impact: 1,
-      events: 2,
-      recruitment: 3,
-      team: 4,
-    };
-
-    const entriesMap: Record<string, IntersectionObserverEntry> = {};
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      if (isClickScrolling.current) return;
-
-      entries.forEach((entry) => {
-        entriesMap[entry.target.id] = entry;
-      });
-
-      let maxVisibleHeight = 0;
-      let activeId = '';
-
-      Object.values(entriesMap).forEach((entry) => {
-        if (entry.isIntersecting) {
-          const height = entry.intersectionRect.height;
-          if (height > maxVisibleHeight) {
-            maxVisibleHeight = height;
-            activeId = entry.target.id;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const element = document.getElementById(sectionIds[i]);
+        if (element) {
+          const top = element.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveIndex(i);
+            break;
           }
         }
-      });
-
-      if (activeId && sectionToIndex[activeId] !== undefined) {
-        setActiveIndex(sectionToIndex[activeId]);
       }
     };
 
-    const observer = new IntersectionObserver(observerCallback, {
-      root: null, // viewport
-      threshold: Array.from({ length: 21 }, (_, i) => i * 0.05), // 0, 0.05, ..., 1.0
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname, isHome]);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
     });
 
-    sectionIds.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => subscription.unsubscribe();
   }, []);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    window.location.href = '/';
+  }
 
   return (
     <>
@@ -119,7 +96,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
           {/* Logo */}
-          <a href="#hero" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
               alt="Place XP Logo"
@@ -130,7 +107,7 @@ export default function Navbar() {
             <span className="text-lg font-semibold text-text-primary tracking-tight">
               Place <span className="text-orange-500">XP</span>
             </span>
-          </a>
+          </Link>
 
           {/* Nav Links */}
           <div className="hidden lg:flex flex-1 justify-center">
@@ -141,19 +118,44 @@ export default function Navbar() {
               particleDistances={[90, 10]}
               particleR={100}
               activeIndex={activeIndex}
-              onActiveIndexChange={handleNavClick}
+              onIndexChange={(idx) => setActiveIndex(idx)}
             />
           </div>
 
           {/* CTA */}
-          <MagneticButton strength={0.2}>
-            <a
-              href="#recruitment"
-              className="px-5 py-2.5 text-sm font-medium rounded-full gradient-cta text-white transition-all duration-300 hover:shadow-orange-glow hover:scale-105"
-            >
-              Join Us
-            </a>
-          </MagneticButton>
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <a
+                  href="/dashboard"
+                  className="text-sm text-text-secondary hover:text-orange-500 transition-colors"
+                >
+                  My Events
+                </a>
+                <button
+                  onClick={handleSignOut}
+                  className="text-sm text-text-muted hover:text-orange-500 transition-colors"
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <a
+                href="/login"
+                className="text-sm text-text-secondary hover:text-orange-500 transition-colors"
+              >
+                Log In
+              </a>
+            )}
+            <MagneticButton strength={0.2}>
+              <a
+                href="#recruitment"
+                className="px-5 py-2.5 text-sm font-medium rounded-full gradient-cta text-white transition-all duration-300 hover:shadow-orange-glow hover:scale-105"
+              >
+                Join Us
+              </a>
+            </MagneticButton>
+          </div>
         </div>
       </motion.header>
 
@@ -173,11 +175,14 @@ export default function Navbar() {
           menuContentColor="#ffffff"
           useFixedPosition={true}
           items={[
-            { label: 'home', href: '#hero', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
+            { label: 'home', href: '/', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
             { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
-            { label: 'events', href: '#events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'events', href: '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
             { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
+            user
+              ? { label: 'my events', href: '/dashboard', ariaLabel: 'My Events', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
+              : { label: 'log in', href: '/login', ariaLabel: 'Log In', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
+            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
           ]}
           onMenuClick={(open) => setMobileOpen(open)}
         />
