@@ -1,0 +1,11 @@
+.masonry {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.masonry-item {
+  position: absolute;
+  will-change: transform, width, height, opacity;
+  padding: 10px;
+}
