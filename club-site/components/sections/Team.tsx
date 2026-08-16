@@ -207,7 +207,7 @@ const activities = [
    TEAM ROLES
 ========================================================= */
 
-const roles = [
+const roles  = [
   {
     title: "Leadership",
     text: "Direction, decision-making and coordination.",
