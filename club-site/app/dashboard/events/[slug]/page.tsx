@@ -70,6 +70,7 @@ export default async function EventDashboardPage({
       <Navbar />
       <EventDashboardClient
         event={event}
+        userId={user.id}
         timeline={(timeline ?? []) as EventTimelineStep[]}
         announcements={(announcements ?? []) as Announcement[]}
         resources={(resources ?? []) as Resource[]}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin, UploadCloud } from 'lucide-react';
 import type {
   EventRow,
   EventTimelineStep,
@@ -18,6 +18,8 @@ import ResourcesView from '@/components/dashboard/ResourcesView';
 import MeetingLinksView from '@/components/dashboard/MeetingLinksView';
 import FAQsView from '@/components/dashboard/FAQsView';
 import OrganizersView from '@/components/dashboard/OrganizersView';
+// 1. Import our new FileUpload component
+import { FileUpload } from '@/components/events/FileUpload'; 
 
 const STATUS_LABEL: Record<string, string> = {
   upcoming: 'Registration Open',
@@ -25,8 +27,10 @@ const STATUS_LABEL: Record<string, string> = {
   past: 'Completed',
 };
 
+// 2. Add userId to the Props interface
 interface Props {
   event: EventRow;
+  userId: string; 
   timeline: EventTimelineStep[];
   announcements: Announcement[];
   resources: Resource[];
@@ -37,6 +41,7 @@ interface Props {
 
 export default function EventDashboardClient({
   event,
+  userId, // Destructure userId here
   timeline,
   announcements,
   resources,
@@ -44,10 +49,12 @@ export default function EventDashboardClient({
   faqs,
   organizers,
 }: Props) {
+  // 3. Add 'submissions' to the tabs array
   const tabs: {
-    key: 'overview' | 'timeline' | 'announcements' | 'resources' | 'meeting' | 'faqs' | 'organizers';
+    key: 'overview' | 'timeline' | 'announcements' | 'resources' | 'meeting' | 'faqs' | 'organizers' | 'submissions';
     label: string;
     count?: number;
+    icon?: React.ReactNode; // Optional icon for the tab
   }[] = [
     { key: 'overview', label: 'Overview' },
     { key: 'timeline', label: 'Timeline' },
@@ -56,6 +63,7 @@ export default function EventDashboardClient({
     { key: 'meeting', label: 'Meeting Links', count: meetingLinks.length },
     { key: 'faqs', label: 'FAQs', count: faqs.length },
     { key: 'organizers', label: 'Organizers', count: organizers.length },
+    { key: 'submissions', label: 'Submit Work', icon: <UploadCloud className="w-4 h-4 ml-1.5 inline" /> }, 
   ];
 
   const [tab, setTab] = useState<(typeof tabs)[number]['key']>('overview');
@@ -96,16 +104,17 @@ export default function EventDashboardClient({
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-8 border-b border-border-divider overflow-x-auto">
-          {tabs.map(({ key, label, count }) => (
+        <div className="flex gap-1 mb-8 border-b border-border-divider overflow-x-auto scrollbar-hide">
+          {tabs.map(({ key, label, count, icon }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`relative px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`relative px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors flex items-center ${
                 tab === key ? 'text-text-primary' : 'text-text-muted hover:text-text-secondary'
               }`}
             >
               {label}
+              {icon && icon}
               {typeof count === 'number' && count > 0 && (
                 <span className="ml-1.5 text-xs text-orange-500">{count}</span>
               )}
@@ -154,6 +163,13 @@ export default function EventDashboardClient({
         {tab === 'meeting' && <MeetingLinksView links={meetingLinks} />}
         {tab === 'faqs' && <FAQsView faqs={faqs} />}
         {tab === 'organizers' && <OrganizersView organizers={organizers} />}
+        
+        {/* 4. Render the new Submissions Panel */}
+        {tab === 'submissions' && (
+          <div className="max-w-2xl">
+            <FileUpload eventId={event.id} userId={userId} />
+          </div>
+        )}
       </div>
     </section>
   );

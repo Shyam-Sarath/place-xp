@@ -125,3 +125,24 @@ export interface EventOrganizer {
   phone: string | null;
   linkedin: string | null;
 }
+
+// New Submission interface matching your team's design pattern
+export interface EventSubmission {
+  id: string;
+  event_id: string;
+  user_id: string;
+  file_path: string;
+  created_at: string;
+}
+
+export interface Database {
+  public: {
+    Tables: {      
+      event_submissions: {
+        Row: EventSubmission;
+        Insert: Omit<EventSubmission, 'id' | 'created_at'> & { id?: string; created_at?: string };
+        Update: Partial<EventSubmission>;
+      };
+    };
+  };
+}
