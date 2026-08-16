@@ -96,6 +96,7 @@ const leadership = [
      DEPARTMENT PEOPLE — NOW PART OF LEADERSHIP ITSELF
   ======================================================= */
 
+
   {
     name: "Technical Lead",
     role: "Technology",
