@@ -12,9 +12,6 @@ const leadership = [
   { name: "G K Vignesh", role: "Chairperson", image: "https://avatar.iran.liara.run/public/boy?username=vignesh" },
   { name: "Rupayan Roy", role: "Vice Chairperson", image: "https://avatar.iran.liara.run/public/boy?username=rupayan" },
   { name: "Devna S", role: "Secretary", image: "https://avatar.iran.liara.run/public/girl?username=devna" },
-];
-
-const executive = [
   { name: "Nisha P", role: "Event Management Lead", image: "https://avatar.iran.liara.run/public/girl?username=nisha" },
   { name: "Sarvesh N S", role: "Marketing Lead", image: "https://avatar.iran.liara.run/public/boy?username=sarvesh" },
 ];
@@ -60,19 +57,6 @@ export default function TeamPage() {
             <div key={m.name} className="rounded-3xl bg-white/5 border border-white/10 p-6 text-center">
               <img src={m.image} alt={m.name} className="w-40 h-40 rounded-full mx-auto border-4 border-orange-500"/>
               <h3 className="mt-6 text-2xl font-bold">{m.name}</h3>
-              <p className="text-orange-500">{m.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="py-24 px-6 max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">Executive Team</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          {executive.map(m=>(
-            <div key={m.name} className="rounded-3xl bg-white/5 border border-white/10 p-6 text-center">
-              <img src={m.image} alt={m.name} className="w-36 h-36 rounded-full mx-auto border-4 border-orange-500"/>
-              <h3 className="mt-5 text-2xl font-bold">{m.name}</h3>
               <p className="text-orange-500">{m.role}</p>
             </div>
           ))}

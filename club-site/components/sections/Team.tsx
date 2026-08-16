@@ -59,18 +59,6 @@ const leadership = [
     gender: "female",
     image: avatar.female(47),
   },
-  {
-    name: "Nisha P",
-    role: "Event Management Lead",
-    gender: "female",
-    image: avatar.female(65),
-  },
-  {
-    name: "Sarvesh N S",
-    role: "Marketing Lead",
-    gender: "male",
-    image: avatar.male(68),
-  },
 ];
 
 /* =========================================================
@@ -97,19 +85,19 @@ const departmentLeads = [
     icon: Palette,
   },
   {
-    name: "Events Lead",
-    role: "Event Management",
+    name: "Nisha P",
+    role: "Event Management Lead",
     gender: "female",
-    image: avatar.female(49),
+    image: avatar.female(65),
     description:
       "Planning and coordinating events that create meaningful experiences for students.",
     icon: CalendarDays,
   },
   {
-    name: "Marketing Lead",
-    role: "Marketing",
+    name: "Sarvesh N S",
+    role: "Marketing Lead",
     gender: "male",
-    image: avatar.male(41),
+    image: avatar.male(68),
     description:
       "Building outreach, communication and visibility for Place XP initiatives.",
     icon: Megaphone,
