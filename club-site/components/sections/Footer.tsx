@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MapPin } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
@@ -32,14 +34,41 @@ const resourceLinks = [
   { label: 'Privacy Policy', href: '#' },
 ];
 
-const socialLinks = [
-  { icon: InstagramIcon, href: '#', label: 'Instagram' },
-  { icon: LinkedinIcon, href: '#', label: 'LinkedIn' },
-  { icon: GithubIcon, href: '#', label: 'GitHub' },
-  { icon: TwitterIcon, href: '#', label: 'Twitter' },
-];
-
 export default function Footer() {
+  const [socialLinks, setSocialLinks] = useState<
+    { icon: typeof InstagramIcon; href: string; label: string }[]
+  >([]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+
+    async function loadSocialLinks() {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('instagram_url, linkedin_url, x_url')
+        .eq('id', 'site_settings')
+        .maybeSingle();
+
+      if (!active) return;
+
+      const nextLinks = [
+        { icon: InstagramIcon, href: data?.instagram_url?.trim() ?? '', label: 'Instagram' },
+        { icon: LinkedinIcon, href: data?.linkedin_url?.trim() ?? '', label: 'LinkedIn' },
+        { icon: GithubIcon, href: '#', label: 'GitHub' },
+        { icon: TwitterIcon, href: data?.x_url?.trim() ?? '', label: 'Twitter' },
+      ].filter((link) => !!link.href && link.href.trim() !== '#');
+
+      setSocialLinks(nextLinks);
+    }
+
+    void loadSocialLinks();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <footer className="relative pt-20 pb-8 border-t border-border-divider">
       <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -113,6 +142,8 @@ export default function Footer() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-9 h-9 rounded-lg glass flex items-center justify-center text-text-muted hover:text-orange-500 hover:border-orange-500/30 transition-all duration-300"
                   >
                     <Icon className="w-4 h-4" />

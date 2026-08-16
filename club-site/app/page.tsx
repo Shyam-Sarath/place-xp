@@ -12,21 +12,13 @@ import { createClient } from '@/lib/supabase/server';
 import type { EventRow } from '@/types/database';
 
 export default async function Home() {
-  let data: EventRow[] = [];
-  try {
-    const supabase = await createClient();
-    const { data: eventsData, error } = await supabase
-      .from('events')
-      .select('*')
-      .eq('status', 'upcoming')
-      .order('event_date', { ascending: true })
-      .limit(3);
-    if (!error && eventsData) {
-      data = eventsData as EventRow[];
-    }
-  } catch (err) {
-    console.warn('Supabase is not configured or could not be reached. Local fallback to empty events list.', err);
-  }
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'upcoming')
+    .order('event_date', { ascending: true })
+    .limit(3);
 
   return (
     <main className="relative">

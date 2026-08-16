@@ -11,7 +11,7 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 const aboutContent: Record<string, { title: string; text: string }> = {
   'About': {
     title: 'Who We Are',
-    text: 'Place XP is VIT Chennai\'s premier skill development club helping students equip the necessary skills for placements, dedicated to bridging the gap between academia and industry. We empower students with the skills, network, and experience they need to land their dream roles at top companies.',
+    text: 'Place XP is VIT Chennai\'s premier placement-focused technical club, dedicated to bridging the gap between academia and industry. We empower students with the skills, network, and experience they need to land their dream roles at top companies.',
   },
   'Mission': {
     title: 'Our Mission',
@@ -19,7 +19,7 @@ const aboutContent: Record<string, { title: string; text: string }> = {
   },
   'Vision': {
     title: 'Our Vision',
-    text: 'Build India\'s most impactful student-run skill development community that produces industry-ready talent. We aim to set the benchmark for student-driven career development.',
+    text: 'Build India\'s most impactful student-run placement community that produces industry-ready talent. We aim to set the benchmark for student-driven career development.',
   },
   'Culture': {
     title: 'Our Culture',
@@ -128,7 +128,7 @@ export default function About() {
                 <Eye className="w-6 h-6 text-blue-400 mb-3 group-hover:scale-110 transition-transform" />
                 <h3 className="text-base font-semibold text-text-primary mb-2">Vision</h3>
                 <p className="text-sm text-text-muted leading-relaxed">
-                  Build India&apos;s most impactful student-run skill development community that produces industry-ready talent.
+                  Build India&apos;s most impactful student-run placement community that produces industry-ready talent.
                 </p>
               </motion.div>
             </div>

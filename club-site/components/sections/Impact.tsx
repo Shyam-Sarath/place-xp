@@ -20,6 +20,7 @@ const stats: Stat[] = [
   { label: 'Members', value: 250, suffix: '+', description: 'Active community members' },
   { label: 'Events', value: 45, suffix: '+', description: 'Workshops & sessions hosted' },
   { label: 'Hackathons', value: 20, suffix: '+', description: 'Competitions organized' },
+  { label: 'Placements', value: 100, suffix: '+', description: 'Students placed successfully' },
   { label: 'Workshops', value: 60, suffix: '+', description: 'Skill-building workshops' },
 ];
 
@@ -80,20 +81,12 @@ export default function Impact() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.05] mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.05]"
           >
             Numbers that speak{' '}
             <br className="hidden md:block" />
             <span className="text-orange-500">for themselves.</span>
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-text-secondary text-lg md:text-xl max-w-2xl leading-relaxed"
-          >
-            Place XP has helped hundreds of students develop their skills to get placed at top companies.
-          </motion.p>
         </div>
 
         {/* Stats — staggered masonry-like layout, not equal grid */}

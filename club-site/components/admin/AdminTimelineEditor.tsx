@@ -95,8 +95,8 @@ export default function AdminTimelineEditor({ eventId, steps }: { eventId: strin
         </div>
       )}
 
-      <form onSubmit={handleAdd} className="flex items-end gap-3">
-        <div className="flex-1">
+      <form onSubmit={handleAdd} className="rounded-2xl border border-border-default p-5 space-y-3">
+        <div>
           <label className="block text-xs text-text-muted mb-1.5">New step</label>
           <input
             required
@@ -107,19 +107,25 @@ export default function AdminTimelineEditor({ eventId, steps }: { eventId: strin
             className={inputClasses}
           />
         </div>
-        <select value={status} onChange={(e) => setStatus(e.target.value as TimelineStepStatus)} className={`${inputClasses} w-40`}>
-          <option value="upcoming">Upcoming</option>
-          <option value="current">Current</option>
-          <option value="done">Done</option>
-        </select>
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl gradient-cta text-white text-sm font-medium hover:shadow-orange-glow transition-all duration-300 disabled:opacity-60 shrink-0"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-          Add
-        </button>
+        <div className="flex items-center gap-3">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as TimelineStepStatus)}
+            className={`${inputClasses} w-40`}
+          >
+            <option value="upcoming">Upcoming</option>
+            <option value="current">Current</option>
+            <option value="done">Done</option>
+          </select>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl gradient-cta text-white text-sm font-medium hover:shadow-orange-glow transition-all duration-300 disabled:opacity-60 shrink-0"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+            Add
+          </button>
+        </div>
       </form>
       {error && <p className="text-sm text-status-error">{error}</p>}
     </div>

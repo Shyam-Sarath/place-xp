@@ -22,10 +22,10 @@ const NAV_ITEMS = [
   { href: '/admin/events', label: 'Events', icon: CalendarDays },
   { href: '/admin/participants', label: 'Participants', icon: Users },
   { href: '/admin/registrations', label: 'Registrations', icon: ClipboardList },
-  { href: '/admin/announcements', label: 'Announcements', icon: Megaphone, soon: true },
-  { href: '/admin/resources', label: 'Resources', icon: FolderOpen, soon: true },
-  { href: '/admin/tasks', label: 'Tasks', icon: KanbanSquare, soon: true },
-  { href: '/admin/settings', label: 'Settings', icon: Settings, soon: true },
+  { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
+  { href: '/admin/resources', label: 'Resources', icon: FolderOpen },
+  { href: '/admin/tasks', label: 'Tasks', icon: KanbanSquare },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function AdminSidebar() {
@@ -48,26 +48,18 @@ export default function AdminSidebar() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {NAV_ITEMS.map(({ href, label, icon: Icon, exact, soon }) => {
+        {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
             <Link
               key={href}
-              href={soon ? '#' : href}
-              aria-disabled={soon}
-              className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                active
-                  ? 'bg-orange-500/15 text-orange-500'
-                  : soon
-                  ? 'text-text-muted/50 cursor-default'
-                  : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
+              href={href}
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                active ? 'bg-orange-500/15 text-orange-500' : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary'
               }`}
             >
-              <span className="flex items-center gap-2.5">
-                <Icon className="w-4 h-4" />
-                {label}
-              </span>
-              {soon && <span className="text-[10px] uppercase tracking-wide text-text-muted/50">Soon</span>}
+              <Icon className="w-4 h-4" />
+              {label}
             </Link>
           );
         })}
