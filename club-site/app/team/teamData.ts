@@ -20,4 +20,18 @@ export const leadership = [
     linkedin: "#",
     quote: "Connecting ideas, people and experiences together.",
   },
+  {
+    name: "Nisha P",
+    role: "Event Management Lead",
+    image: "/team/nisha.jpg",
+    linkedin: "#",
+    quote: "Creating engaging events and memorable experiences for everyone.",
+  },
+  {
+    name: "Sarvesh N S",
+    role: "Marketing Lead",
+    image: "/team/sarvesh.jpg",
+    linkedin: "#",
+    quote: "Building the PlaceXP brand through creativity, outreach and impact.",
+  },
 ];
