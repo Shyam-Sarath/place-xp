@@ -1,14 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-if (typeof globalThis.WebSocket === 'undefined') {
-  try {
-    globalThis.WebSocket = require('ws');
-  } catch {
-    // ignore
-  }
-}
-
 // Keeps the Supabase auth session cookie fresh on every request.
 // Called from proxy.ts (Next.js 16 renamed "middleware" to "proxy").
 export async function updateSession(request: NextRequest) {
@@ -33,8 +25,6 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Refreshes the token if it's expired. Required for Server Components
-  // to see a valid session.
   await supabase.auth.getUser();
 
   return supabaseResponse;

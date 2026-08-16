@@ -15,6 +15,12 @@ import {
 } from "lucide-react";
 
 /* =========================================================
+   TYPES
+========================================================= */
+
+type Gender = "male" | "female";
+
+/* =========================================================
    AVATAR HELPER
    Gender-based reliable profile images
 ========================================================= */
@@ -33,95 +39,102 @@ const avatar = {
 const faculty = {
   name: "Dr. Rajarajeshwari S",
   role: "Faculty Coordinator",
+  gender: "female" as Gender,
   image: avatar.female(44),
 };
 
 /* =========================================================
-   EXECUTIVE BOARD
+   LEADERSHIP TEAM
+   IMPORTANT:
+   ALL PEOPLE ARE KEPT UNDER ONE LEADERSHIP SECTION.
+   There is NO separate Department Leads section.
 ========================================================= */
 
 const leadership = [
   {
     name: "G K Vignesh",
     role: "Chairperson",
-    gender: "male",
+    gender: "male" as Gender,
     image: avatar.male(32),
+    description:
+      "Leading the vision, direction and overall growth of the Place XP community.",
   },
   {
     name: "Rupayan Roy",
     role: "Vice Chairperson",
-    gender: "male",
+    gender: "male" as Gender,
     image: avatar.male(12),
+    description:
+      "Supporting leadership, coordination and strategic initiatives across Place XP.",
   },
   {
     name: "Devna S",
     role: "Secretary",
-    gender: "female",
+    gender: "female" as Gender,
     image: avatar.female(47),
+    description:
+      "Managing coordination, communication and organizational responsibilities.",
   },
   {
     name: "Nisha P",
     role: "Event Management Lead",
-    gender: "female",
+    gender: "female" as Gender,
     image: avatar.female(65),
+    description:
+      "Planning and coordinating events that create meaningful experiences for students.",
   },
   {
     name: "Sarvesh N S",
     role: "Marketing Lead",
-    gender: "male",
+    gender: "male" as Gender,
     image: avatar.male(68),
+    description:
+      "Building outreach, communication and visibility for Place XP initiatives.",
   },
-];
 
-/* =========================================================
-   DEPARTMENT LEADS
-========================================================= */
+  /* =======================================================
+     DEPARTMENT PEOPLE — NOW PART OF LEADERSHIP ITSELF
+  ======================================================= */
 
-const departmentLeads = [
   {
     name: "Technical Lead",
-    role: "Technical",
-    gender: "male",
+    role: "Technology",
+    gender: "male" as Gender,
     image: avatar.male(52),
     description:
       "Leading technical initiatives, development and technology-driven projects.",
-    icon: Code2,
   },
   {
     name: "Design Lead",
     role: "Design",
-    gender: "female",
+    gender: "female" as Gender,
     image: avatar.female(32),
     description:
       "Creating visual experiences, branding and creative communication for Place XP.",
-    icon: Palette,
   },
   {
     name: "Events Lead",
-    role: "Event Management",
-    gender: "female",
+    role: "Events",
+    gender: "female" as Gender,
     image: avatar.female(49),
     description:
       "Planning and coordinating events that create meaningful experiences for students.",
-    icon: CalendarDays,
   },
   {
     name: "Marketing Lead",
     role: "Marketing",
-    gender: "male",
+    gender: "male" as Gender,
     image: avatar.male(41),
     description:
       "Building outreach, communication and visibility for Place XP initiatives.",
-    icon: Megaphone,
   },
   {
     name: "Community Lead",
     role: "Community",
-    gender: "female",
+    gender: "female" as Gender,
     image: avatar.female(68),
     description:
       "Strengthening student engagement, collaboration and community experience.",
-    icon: Users,
   },
 ];
 
@@ -303,7 +316,7 @@ function ProfileImage({
 }: {
   src: string;
   name: string;
-  gender: "male" | "female";
+  gender: Gender;
   className: string;
 }) {
   const fallback =
@@ -420,7 +433,7 @@ export default function Team() {
                 <ProfileImage
                   src={faculty.image}
                   name={faculty.name}
-                  gender="female"
+                  gender={faculty.gender}
                   className="relative h-48 w-48 rounded-full border-4 border-orange-500 object-cover md:h-56 md:w-56"
                 />
 
@@ -462,14 +475,16 @@ export default function Team() {
         </motion.div>
 
         {/* =====================================================
-            EXECUTIVE BOARD
+            LEADERSHIP TEAM
+            ALL PEOPLE ARE HERE
+            NO SEPARATE DEPARTMENT LEADS
         ===================================================== */}
 
         <div className="mt-32">
 
           <SectionTitle
             eyebrow="Executive Board"
-            title="Executive Board"
+            title="Leadership Team"
             description="The student leaders shaping the direction, culture and growth of Place XP."
           />
 
@@ -478,7 +493,7 @@ export default function Team() {
             {leadership.map((member, index) => (
 
               <motion.div
-                key={member.name}
+                key={`${member.name}-${member.role}`}
                 initial={{ opacity: 0, x: -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
@@ -512,7 +527,7 @@ export default function Team() {
                     <ProfileImage
                       src={member.image}
                       name={member.name}
-                      gender={member.gender as "male" | "female"}
+                      gender={member.gender}
                       className="relative h-32 w-32 rounded-full border-4 border-orange-500/80 object-cover transition-transform duration-500 group-hover:scale-105 md:h-36 md:w-36"
                     />
 
@@ -533,9 +548,7 @@ export default function Team() {
                     <div className="mt-4 h-px w-12 bg-orange-500/50 transition-all duration-500 group-hover:w-20" />
 
                     <p className="mt-4 max-w-2xl text-sm leading-7 text-text-secondary">
-                      Helping shape ideas, coordinate initiatives and
-                      create meaningful experiences for the Place XP
-                      community.
+                      {member.description}
                     </p>
 
                   </div>
@@ -544,96 +557,6 @@ export default function Team() {
               </motion.div>
 
             ))}
-
-          </div>
-        </div>
-
-        {/* =====================================================
-            LEADERSHIP TEAM
-        ===================================================== */}
-
-        <div className="mt-36">
-
-          <SectionTitle
-            eyebrow="Leadership Team"
-            title="Leadership Team"
-            description="The teams behind Place XP, bringing together technical expertise, event management, design, marketing and community building."
-          />
-
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
-            {departmentLeads.map((member, index) => {
-
-              const Icon = member.icon;
-
-              return (
-
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 35 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{
-                    duration: 0.55,
-                    delay: index * 0.07,
-                  }}
-                  className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.035] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-orange-500/50 hover:bg-white/[0.05] hover:shadow-[0_20px_60px_rgba(249,115,22,0.10)]"
-                >
-
-                  <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-orange-500/5 blur-3xl transition-all duration-500 group-hover:bg-orange-500/15" />
-
-                  <span className="absolute right-6 top-5 text-3xl font-bold text-white/[0.04]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  {/* Department Lead Image */}
-
-                  <div className="relative mx-auto mb-6 flex h-32 w-32 items-center justify-center">
-
-                    <div className="absolute inset-0 rounded-full bg-orange-500/10 blur-xl transition-all duration-500 group-hover:bg-orange-500/20" />
-
-                    <div className="absolute inset-2 rounded-full border border-orange-500/20 transition-all duration-500 group-hover:scale-105 group-hover:border-orange-500/50" />
-
-                    <ProfileImage
-                      src={member.image}
-                      name={member.name}
-                      gender={member.gender as "male" | "female"}
-                      className="relative h-28 w-28 rounded-full border-4 border-orange-500/80 object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-
-                  </div>
-
-                  {/* Icon */}
-
-                  <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400 transition-all duration-300 group-hover:bg-orange-500 group-hover:text-white">
-
-                    <Icon className="h-5 w-5" />
-
-                  </div>
-
-                  <div className="mt-5 text-center">
-
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
-                      {member.role}
-                    </p>
-
-                    <h3 className="mt-2 text-xl font-bold">
-                      {member.name}
-                    </h3>
-
-                    <div className="mx-auto mt-4 h-px w-10 bg-orange-500/40 transition-all duration-500 group-hover:w-16" />
-
-                    <p className="mt-4 text-sm leading-7 text-text-secondary">
-                      {member.description}
-                    </p>
-
-                  </div>
-
-                </motion.div>
-
-              );
-
-            })}
 
           </div>
         </div>
@@ -1049,7 +972,6 @@ export default function Team() {
               <span className="block text-orange-500">
                 contribute?
               </span>
-
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl leading-8 text-text-secondary">
