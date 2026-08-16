@@ -12,12 +12,12 @@ const LinkedinIcon = ({ className }: { className?: string }) => (
 
 // Editable team data
 const teamMembers = [
-  { name: 'Faculty Coordinator', role: 'Faculty Advisor', initials: 'FC', gradient: 'from-blue-500 to-blue-700' },
-  { name: 'Club President', role: 'President', initials: 'CP', gradient: 'from-orange-500 to-orange-700' },
-  { name: 'Vice President', role: 'Vice President', initials: 'VP', gradient: 'from-blue-400 to-blue-600' },
-  { name: 'Technical Lead', role: 'Tech Lead', initials: 'TL', gradient: 'from-green-500 to-green-700' },
-  { name: 'Events Head', role: 'Events Lead', initials: 'EH', gradient: 'from-purple-500 to-purple-700' },
-  { name: 'Design Lead', role: 'Design Head', initials: 'DL', gradient: 'from-pink-500 to-pink-700' },
+  { name: 'Dr. Rajarajeshwari S', role: 'Faculty Advisor', initials: 'RRS', gradient: 'from-blue-500 to-blue-700' },
+  { name: 'G K Vignesh', role: 'Chairperson', initials: 'GKV', gradient: 'from-orange-500 to-orange-700' },
+  { name: 'Rupayan Roy', role: 'Vice Chairperson', initials: 'RR', gradient: 'from-blue-400 to-blue-600' },
+  { name: 'Devna S', role: 'Secretary', initials: 'DS', gradient: 'from-green-500 to-green-700' },
+  { name: 'Nisha P', role: 'Event Management Lead', initials: 'NP', gradient: 'from-purple-500 to-purple-700' },
+  { name: 'Sarvesh N S', role: 'Marketing Lead', initials: 'SNS', gradient: 'from-pink-500 to-pink-700' },
 ];
 
 export default function Team() {
