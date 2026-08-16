@@ -8,6 +8,8 @@ export type TimelineStepStatus = 'upcoming' | 'current' | 'done';
 export type PaymentStatus = 'not_required' | 'pending' | 'paid' | 'waived';
 export type AttendanceStatus = 'registered' | 'attended' | 'no_show';
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type TaskStatus = 'todo' | 'in_progress' | 'done';
+export type TaskPriority = 'low' | 'medium' | 'high';
 
 export interface Profile {
   id: string;
@@ -89,6 +91,10 @@ export interface Announcement {
   created_at: string;
 }
 
+export interface AnnouncementWithEvent extends Announcement {
+  events: Pick<EventRow, 'id' | 'slug' | 'title'> | null;
+}
+
 export interface Resource {
   id: string;
   event_id: string;
@@ -97,6 +103,10 @@ export interface Resource {
   file_type: string | null;
   uploaded_by: string | null;
   uploaded_at: string;
+}
+
+export interface ResourceWithEvent extends Resource {
+  events: Pick<EventRow, 'id' | 'slug' | 'title'> | null;
 }
 
 export interface MeetingLink {
@@ -126,23 +136,28 @@ export interface EventOrganizer {
   linkedin: string | null;
 }
 
-// New Submission interface matching your team's design pattern
-export interface EventSubmission {
+export interface TaskItem {
   id: string;
-  event_id: string;
-  user_id: string;
-  file_path: string;
+  event_id: string | null;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  created_by: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 
-export interface Database {
-  public: {
-    Tables: {      
-      event_submissions: {
-        Row: EventSubmission;
-        Insert: Omit<EventSubmission, 'id' | 'created_at'> & { id?: string; created_at?: string };
-        Update: Partial<EventSubmission>;
-      };
-    };
-  };
+export interface TaskItemWithEvent extends TaskItem {
+  events: Pick<EventRow, 'id' | 'slug' | 'title'> | null;
+}
+
+export interface SiteSettings {
+  id: string;
+  site_name: string;
+  contact_email: string | null;
+  instagram_url: string | null;
+  linkedin_url: string | null;
+  x_url: string | null;
+  updated_at: string | null;
 }

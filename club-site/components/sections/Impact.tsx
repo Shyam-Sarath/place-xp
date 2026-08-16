@@ -17,10 +17,10 @@ interface Stat {
 
 // Editable stats — committee can update these values
 const stats: Stat[] = [
-  { label: 'Members', value: 250, suffix: '+', description: 'Active community members' },
+  { label: 'Members', value: 50, suffix: '+', description: 'Active community members' },
   { label: 'Events', value: 45, suffix: '+', description: 'Workshops & sessions hosted' },
-  { label: 'Hackathons', value: 20, suffix: '+', description: 'Competitions organized' },
-  { label: 'Workshops', value: 60, suffix: '+', description: 'Skill-building workshops' },
+  { label: 'Alumni Sessions', value: 10, suffix: '+', description: 'Mentorship & sharing sessions' },
+  { label: 'Workshops', value: 5, suffix: '+', description: 'Skill-building workshops' },
 ];
 
 function AnimatedCounter({ value, suffix, inView }: { value: number; suffix: string; inView: boolean }) {

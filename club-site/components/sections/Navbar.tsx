@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
@@ -16,9 +16,23 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isStaff, setIsStaff] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [isManualNav, setIsManualNav] = useState(false);
+  const navTimerRef = useRef<number | null>(null);
 
   const isHome = pathname === '/';
+
+  const handleNavSelect = (index: number) => {
+    setActiveIndex(index);
+    if (isHome) {
+      setIsManualNav(true);
+      if (navTimerRef.current) {
+        window.clearTimeout(navTimerRef.current);
+      }
+      navTimerRef.current = window.setTimeout(() => setIsManualNav(false), 700);
+    }
+  };
 
   const navLinks = [
     { label: 'About', href: isHome ? '#about' : '/#about' },
@@ -41,6 +55,8 @@ export default function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
+      if (isManualNav) return;
+
       const scrollPosition = window.scrollY + 250;
 
       for (let i = sectionIds.length - 1; i >= 0; i--) {
@@ -58,20 +74,45 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname, isHome]);
+  }, [pathname, isHome, isManualNav]);
 
   useEffect(() => {
     const supabase = createClient();
+    let active = true;
 
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const syncUser = async (nextUser: User | null) => {
+      if (!active) return;
+      setUser(nextUser);
+
+      if (!nextUser) {
+        setIsStaff(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', nextUser.id)
+        .maybeSingle();
+
+      if (!active) return;
+      setIsStaff(!error && !!data && (data.role === 'organizer' || data.role === 'admin'));
+    };
+
+    supabase.auth.getUser().then(({ data }) => {
+      void syncUser(data.user);
+    });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      void syncUser(session?.user ?? null);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function handleSignOut() {
@@ -118,7 +159,7 @@ export default function Navbar() {
               particleDistances={[90, 10]}
               particleR={100}
               activeIndex={activeIndex}
-              onIndexChange={(idx) => setActiveIndex(idx)}
+              onIndexChange={handleNavSelect}
             />
           </div>
 
@@ -126,12 +167,14 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             {user ? (
               <>
-                <a
-                  href="/dashboard"
-                  className="text-sm text-text-secondary hover:text-orange-500 transition-colors"
-                >
-                  My Events
-                </a>
+                {isStaff && (
+                  <Link
+                    href="/admin"
+                    className="text-sm text-text-secondary hover:text-orange-500 transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="text-sm text-text-muted hover:text-orange-500 transition-colors"
@@ -180,7 +223,9 @@ export default function Navbar() {
             { label: 'events', href: '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
             { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
             user
-              ? { label: 'my events', href: '/dashboard', ariaLabel: 'My Events', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
+              ? isStaff
+                ? { label: 'admin', href: '/admin', ariaLabel: 'Admin Dashboard', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
+                : { label: 'profile', href: '/dashboard', ariaLabel: 'Profile', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
               : { label: 'log in', href: '/login', ariaLabel: 'Log In', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
             { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
           ]}
