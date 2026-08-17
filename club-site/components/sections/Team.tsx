@@ -62,7 +62,7 @@ const leadership = [
     name: "Nisha P",
     role: "Event Management Lead",
     gender: "female",
-    image: "/team/event_management_lead.jpeg",
+    image: "/team/Event_management_lead.jpeg",
   },
   {
     name: "Sarvesh N S",
@@ -119,7 +119,7 @@ const departmentLeads = [
     gender: "female",
     image: avatar.female(68),
     description:
-      "Managing social media presence, digital communication and engaging content for the Place XP community.",
+      "Managing the social media presence, digital communication and engaging content for the Place XP community.",
     icon: Users,
   },
 ];
