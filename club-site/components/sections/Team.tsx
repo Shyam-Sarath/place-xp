@@ -63,13 +63,13 @@ const leadership = [
     name: "Nisha P",
     role: "Event Management Lead",
     gender: "female",
-    image: avatar.female(65),
+    image: "/team/Event_management_lead.jpeg",
   },
   {
     name: "Sarvesh N S",
     role: "Marketing Lead",
     gender: "male",
-    image: avatar.male(68),
+    image: "/team/marketing_lead.jpeg",
   },
 ];
 
