@@ -119,7 +119,7 @@ const departmentLeads = [
     gender: "female",
     image: avatar.female(68),
     description:
-      "Managing social media presence, digital communication and engaging content for the Place XP community.",
+      "Managing the social media presence, digital communication and engaging content for the Place XP community.",
     icon: Users,
   },
 ];
