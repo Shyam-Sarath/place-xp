@@ -16,7 +16,6 @@ import {
 
 /* =========================================================
    AVATAR HELPER
-   Gender-based reliable profile images
 ========================================================= */
 
 const avatar = {
@@ -45,7 +44,7 @@ const leadership = [
     name: "G K Vignesh",
     role: "Chairperson",
     gender: "male",
-    image: avatar.male(32),
+    image: "/team/chairperson.jpeg",
   },
   {
     name: "Rupayan Roy",
@@ -63,7 +62,7 @@ const leadership = [
     name: "Nisha P",
     role: "Event Management Lead",
     gender: "female",
-    image: "/team/Event_management_lead.jpeg",
+    image: "/team/event_management_lead.jpeg",
   },
   {
     name: "Sarvesh N S",
@@ -115,12 +114,12 @@ const departmentLeads = [
     icon: Megaphone,
   },
   {
-    name: "Community Lead",
-    role: "Community",
+    name: "Social Media Lead",
+    role: "Social Media",
     gender: "female",
     image: avatar.female(68),
     description:
-      "Strengthening student engagement, collaboration and community experience.",
+      "Managing social media presence, digital communication and engaging content for the Place XP community.",
     icon: Users,
   },
 ];
@@ -220,8 +219,8 @@ const roles = [
     icon: Palette,
   },
   {
-    title: "Community",
-    text: "Engagement, collaboration and member experience.",
+    title: "Social Media",
+    text: "Digital communication, content and online engagement.",
     icon: Users,
   },
 ];
@@ -278,14 +277,10 @@ function SectionTitle({
         {eyebrow}
       </span>
 
-      <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-        {title}
-      </h2>
+      <h2 className="mt-3 text-3xl font-bold md:text-4xl">{title}</h2>
 
       {description && (
-        <p className="mt-4 leading-8 text-text-secondary">
-          {description}
-        </p>
+        <p className="mt-4 leading-8 text-text-secondary">{description}</p>
       )}
     </motion.div>
   );
@@ -306,10 +301,7 @@ function ProfileImage({
   gender: "male" | "female";
   className: string;
 }) {
-  const fallback =
-    gender === "male"
-      ? avatar.male(1)
-      : avatar.female(1);
+  const fallback = gender === "male" ? avatar.male(1) : avatar.female(1);
 
   return (
     <img
@@ -463,6 +455,7 @@ export default function Team() {
 
         {/* =====================================================
             EXECUTIVE BOARD
+            VERTICAL ONE BELOW ANOTHER
         ===================================================== */}
 
         <div className="mt-32">
@@ -550,6 +543,7 @@ export default function Team() {
 
         {/* =====================================================
             DEPARTMENT LEADS
+            VERTICAL ONE BELOW ANOTHER
         ===================================================== */}
 
         <div className="mt-36">
@@ -560,7 +554,7 @@ export default function Team() {
             description="Each department brings a different strength to the community, working together to turn ideas into meaningful experiences."
           />
 
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto mt-14 max-w-5xl space-y-7">
 
             {departmentLeads.map((member, index) => {
 
@@ -577,55 +571,59 @@ export default function Team() {
                     duration: 0.55,
                     delay: index * 0.07,
                   }}
-                  className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.035] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-orange-500/50 hover:bg-white/[0.05] hover:shadow-[0_20px_60px_rgba(249,115,22,0.10)]"
+                  className="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.035] p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-white/[0.05] hover:shadow-[0_20px_60px_rgba(249,115,22,0.10)] md:p-9"
                 >
 
                   <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-orange-500/5 blur-3xl transition-all duration-500 group-hover:bg-orange-500/15" />
 
-                  <span className="absolute right-6 top-5 text-3xl font-bold text-white/[0.04]">
+                  <span className="absolute right-7 top-6 text-4xl font-bold text-white/[0.04]">
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  {/* Department Lead Image */}
+                  <div className="relative flex flex-col items-center gap-7 md:flex-row md:gap-10">
 
-                  <div className="relative mx-auto mb-6 flex h-32 w-32 items-center justify-center">
+                    {/* Department Image */}
 
-                    <div className="absolute inset-0 rounded-full bg-orange-500/10 blur-xl transition-all duration-500 group-hover:bg-orange-500/20" />
+                    <div className="relative shrink-0">
 
-                    <div className="absolute inset-2 rounded-full border border-orange-500/20 transition-all duration-500 group-hover:scale-105 group-hover:border-orange-500/50" />
+                      <div className="absolute -inset-4 rounded-full bg-orange-500/10 blur-xl transition-all duration-500 group-hover:bg-orange-500/20" />
 
-                    <ProfileImage
-                      src={member.image}
-                      name={member.name}
-                      gender={member.gender as "male" | "female"}
-                      className="relative h-28 w-28 rounded-full border-4 border-orange-500/80 object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                      <div className="absolute -inset-2 rounded-full border border-orange-500/20 transition-all duration-500 group-hover:scale-105 group-hover:border-orange-500/50" />
 
-                  </div>
+                      <ProfileImage
+                        src={member.image}
+                        name={member.name}
+                        gender={member.gender as "male" | "female"}
+                        className="relative h-32 w-32 rounded-full border-4 border-orange-500/80 object-cover transition-transform duration-500 group-hover:scale-105 md:h-36 md:w-36"
+                      />
 
-                  {/* Icon */}
+                    </div>
 
-                  <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400 transition-all duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                    {/* Content */}
 
-                    <Icon className="h-5 w-5" />
+                    <div className="flex-1 text-center md:text-left">
 
-                  </div>
+                      <div className="flex justify-center md:justify-start">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 text-orange-400 transition-all duration-300 group-hover:bg-orange-500 group-hover:text-white">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                      </div>
 
-                  <div className="mt-5 text-center">
+                      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
+                        {member.role}
+                      </p>
 
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
-                      {member.role}
-                    </p>
+                      <h3 className="mt-2 text-2xl font-bold">
+                        {member.name}
+                      </h3>
 
-                    <h3 className="mt-2 text-xl font-bold">
-                      {member.name}
-                    </h3>
+                      <div className="mt-4 h-px w-10 bg-orange-500/40 transition-all duration-500 group-hover:w-16 md:mx-0 mx-auto" />
 
-                    <div className="mx-auto mt-4 h-px w-10 bg-orange-500/40 transition-all duration-500 group-hover:w-16" />
+                      <p className="mt-4 text-sm leading-7 text-text-secondary">
+                        {member.description}
+                      </p>
 
-                    <p className="mt-4 text-sm leading-7 text-text-secondary">
-                      {member.description}
-                    </p>
+                    </div>
 
                   </div>
 
@@ -1049,7 +1047,6 @@ export default function Team() {
               <span className="block text-orange-500">
                 contribute?
               </span>
-
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl leading-8 text-text-secondary">
