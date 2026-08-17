@@ -45,7 +45,7 @@ const leadership = [
     name: "G K Vignesh",
     role: "Chairperson",
     gender: "male",
-    image: avatar.male(32),
+    image: "/team/chairperson.jpeg",
   },
   {
     name: "Rupayan Roy",
@@ -115,13 +115,13 @@ const departmentLeads = [
     icon: Megaphone,
   },
   {
-    name: "Community Lead",
-    role: "Community",
+    name: "Social Media Lead",
+    role: "Social Media",
     gender: "female",
     image: avatar.female(68),
     description:
-      "Strengthening student engagement, collaboration and community experience.",
-    icon: Users,
+      "Managing social media, digital communication and online engagement for Place XP.",
+    icon: Megaphone,
   },
 ];
 
@@ -473,7 +473,7 @@ export default function Team() {
             description="The student leaders shaping the direction, culture and growth of Place XP."
           />
 
-          <div className="mx-auto mt-14 max-w-5xl space-y-7">
+          <div className="relative flex flex-col items-center gap-7 p-7 md:flex-row md:p-9">
 
             {leadership.map((member, index) => (
 
