@@ -4,7 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Loader2, Mail, Lock, User, Hash, GraduationCap, Users, Phone, ShieldCheck } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Hash, GraduationCap, ShieldCheck } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import MagneticButton from '@/components/ui/MagneticButton';
 
@@ -34,12 +34,10 @@ export default function AuthForm({ defaultRole = 'participant' }: AuthFormProps)
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [regNo, setRegNo] = useState('');
-  const [department, setDepartment] = useState('');
   const [year, setYear] = useState('');
-  const [section, setSection] = useState('');
-  const [phone, setPhone] = useState('');
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -54,6 +52,11 @@ export default function AuthForm({ defaultRole = 'participant' }: AuthFormProps)
     setLoading(true);
 
     if (mode === 'signup') {
+      if (password !== confirmPassword) {
+        setError('Passwords do not match.');
+        return;
+      }
+
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -61,10 +64,7 @@ export default function AuthForm({ defaultRole = 'participant' }: AuthFormProps)
           data: {
             full_name: fullName,
             reg_no: regNo,
-            department,
             year,
-            section,
-            phone,
             // Only used to pick which confirmation-email wording to show
             // below. Has no effect on the account's actual role — that's
             // decided server-side by handle_new_user() checking
@@ -246,67 +246,31 @@ export default function AuthForm({ defaultRole = 'participant' }: AuthFormProps)
                 className={inputClasses}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative">
-                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input
-                  required
-                  type="text"
-                  placeholder="Reg. number"
-                  value={regNo}
-                  onChange={(e) => setRegNo(e.target.value)}
-                  className={inputClasses}
-                />
-              </div>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input
-                  required
-                  type="tel"
-                  placeholder="Phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className={inputClasses}
-                />
-              </div>
+            <div className="relative">
+              <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input
+                required
+                type="text"
+                placeholder="Reg. number"
+                value={regNo}
+                onChange={(e) => setRegNo(e.target.value)}
+                className={inputClasses}
+              />
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="relative col-span-1">
-                <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <select
-                  required
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  className={`${inputClasses} appearance-none pl-11`}
-                >
-                  <option value="" disabled>Year</option>
-                  <option value="1">I</option>
-                  <option value="2">II</option>
-                  <option value="3">III</option>
-                  <option value="4">IV</option>
-                </select>
-              </div>
-              <div className="relative col-span-1">
-                <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input
-                  required
-                  type="text"
-                  placeholder="Section"
-                  value={section}
-                  onChange={(e) => setSection(e.target.value)}
-                  className={`${inputClasses} pl-11`}
-                />
-              </div>
-              <div className="relative col-span-1">
-                <input
-                  required
-                  type="text"
-                  placeholder="Dept."
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full rounded-xl bg-bg-elevated/50 border border-border-default px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/40 transition-colors"
-                />
-              </div>
+            <div className="relative">
+              <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <select
+                required
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className={`${inputClasses} appearance-none pl-11`}
+              >
+                <option value="" disabled>Year</option>
+                <option value="1">I</option>
+                <option value="2">II</option>
+                <option value="3">III</option>
+                <option value="4">IV</option>
+              </select>
             </div>
           </>
         )}
@@ -335,6 +299,21 @@ export default function AuthForm({ defaultRole = 'participant' }: AuthFormProps)
             className={inputClasses}
           />
         </div>
+
+        {mode === 'signup' && (
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+            <input
+              required
+              type="password"
+              placeholder="Confirm Password"
+              minLength={6}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={inputClasses}
+            />
+          </div>
+        )}
 
         {error && (
           <motion.p

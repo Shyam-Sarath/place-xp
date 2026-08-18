@@ -159,5 +159,7 @@ export interface SiteSettings {
   instagram_url: string | null;
   linkedin_url: string | null;
   x_url: string | null;
+  recruitment_open: boolean;
+  recruitment_closes_at: string | null;
   updated_at: string | null;
 }
