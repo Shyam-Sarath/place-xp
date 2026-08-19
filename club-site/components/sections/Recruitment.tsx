@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'motion/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,6 +8,8 @@ import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import SpecularButton from '@/components/reactbits/SpecularButton';
 import MagneticButton from '@/components/ui/MagneticButton';
 import SectionWrapper from '@/components/ui/SectionWrapper';
+import RecruitmentClosedModal from '@/components/sections/RecruitmentClosedModal';
+import { createClient } from '@/lib/supabase/client';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +29,42 @@ export default function Recruitment() {
   const ref = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [showRecruitmentClosed, setShowRecruitmentClosed] = useState(false);
+  const [recruitmentOpen, setRecruitmentOpen] = useState(true);
+
+  useEffect(() => {
+    // Fetch recruitment closing time on mount
+    const fetchRecruitmentStatus = async () => {
+      const supabase = createClient();
+      const { data: settings } = await supabase
+        .from('site_settings')
+        .select('recruitment_closes_at')
+        .eq('id', 'site_settings')
+        .maybeSingle();
+
+      if (settings?.recruitment_closes_at) {
+        const closingTime = new Date(settings.recruitment_closes_at);
+        const now = new Date();
+        // Recruitment is open if closing time hasn't passed yet
+        setRecruitmentOpen(now < closingTime);
+      } else {
+        // If no closing time is set, recruitment is closed indefinitely
+        setRecruitmentOpen(false);
+      }
+    };
+
+    fetchRecruitmentStatus();
+  }, []);
+
+  const handleApplyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!recruitmentOpen) {
+      setShowRecruitmentClosed(true);
+      return;
+    }
+    // If recruitment is open, the button's default behavior is allowed
+    // (you can navigate or do whatever the button does)
+  };
 
   useEffect(() => {
     if (!timelineRef.current) return;
@@ -73,6 +111,7 @@ export default function Recruitment() {
   }, []);
 
   return (
+    <>
     <SectionWrapper id="recruitment" className="py-32 md:py-44 relative overflow-hidden">
       {/* Unique visual identity — gradient mesh background */}
       <div className="absolute inset-0">
@@ -199,6 +238,7 @@ export default function Recruitment() {
                   autoAnimate
                   speed={0.3}
                   className="w-full"
+                  onClick={handleApplyClick}
                 >
                   Apply Now
                 </SpecularButton>
@@ -218,5 +258,8 @@ export default function Recruitment() {
         </div>
       </div>
     </SectionWrapper>
+
+    {showRecruitmentClosed && <RecruitmentClosedModal onClose={() => setShowRecruitmentClosed(false)} />}
+    </>
   );
 }

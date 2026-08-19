@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { gsap } from 'gsap';
 import { ChevronDown } from 'lucide-react';
@@ -8,9 +8,37 @@ import Ferrofluid from '@/components/reactbits/Ferrofluid';
 import ShinyText from '@/components/reactbits/ShinyText';
 import SpecularButton from '@/components/reactbits/SpecularButton';
 import MagneticButton from '@/components/ui/MagneticButton';
+import RecruitmentClosedModal from '@/components/sections/RecruitmentClosedModal';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Hero() {
   const headlineRef = useRef<HTMLDivElement>(null);
+  const [showRecruitmentClosed, setShowRecruitmentClosed] = useState(false);
+  const [recruitmentOpen, setRecruitmentOpen] = useState(true);
+
+  useEffect(() => {
+    // Fetch recruitment closing time on mount
+    const fetchRecruitmentStatus = async () => {
+      const supabase = createClient();
+      const { data: settings } = await supabase
+        .from('site_settings')
+        .select('recruitment_closes_at')
+        .eq('id', 'site_settings')
+        .maybeSingle();
+
+      if (settings?.recruitment_closes_at) {
+        const closingTime = new Date(settings.recruitment_closes_at);
+        const now = new Date();
+        // Recruitment is open if closing time hasn't passed yet
+        setRecruitmentOpen(now < closingTime);
+      } else {
+        // If no closing time is set, recruitment is closed indefinitely
+        setRecruitmentOpen(false);
+      }
+    };
+
+    fetchRecruitmentStatus();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -53,6 +81,14 @@ export default function Hero() {
 
     return () => ctx.revert();
   }, []);
+
+  const handleJoinClick = () => {
+    if (!recruitmentOpen) {
+      setShowRecruitmentClosed(true);
+      return;
+    }
+    document.getElementById('recruitment')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <section
@@ -165,7 +201,7 @@ export default function Hero() {
                 followMouse
                 autoAnimate
                 speed={0.2}
-                onClick={() => document.getElementById('recruitment')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={handleJoinClick}
               >
                 Join Place XP
               </SpecularButton>
@@ -203,6 +239,9 @@ export default function Hero() {
 
       {/* Bottom Gradient Fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent z-[3]" />
+
+      {/* Recruitment Closed Modal */}
+      {showRecruitmentClosed && <RecruitmentClosedModal onClose={() => setShowRecruitmentClosed(false)} />}
     </section>
   );
 }

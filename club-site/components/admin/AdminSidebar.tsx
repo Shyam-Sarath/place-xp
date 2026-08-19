@@ -11,6 +11,7 @@ import {
   Megaphone,
   FolderOpen,
   KanbanSquare,
+  Briefcase,
   Settings,
   ExternalLink,
   LogOut,
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
   { href: '/admin/resources', label: 'Resources', icon: FolderOpen },
   { href: '/admin/tasks', label: 'Tasks', icon: KanbanSquare },
+  { href: '/admin/recruitment', label: 'Recruitment', icon: Briefcase },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
