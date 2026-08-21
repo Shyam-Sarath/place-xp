@@ -62,8 +62,11 @@ export default function Recruitment() {
       setShowRecruitmentClosed(true);
       return;
     }
-    // If recruitment is open, the button's default behavior is allowed
-    // (you can navigate or do whatever the button does)
+    window.open(
+      'https://docs.google.com/forms/d/e/1FAIpQLSddXFlWAd84yc-42qA8iH3RcMzJ7BEP8mhGTTRlR9tzUCxH6Q/viewform',
+      '_blank',
+      'noopener,noreferrer'
+    );
   };
 
   useEffect(() => {
