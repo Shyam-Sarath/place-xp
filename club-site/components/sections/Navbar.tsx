@@ -38,19 +38,22 @@ export default function Navbar() {
     { label: 'About', href: isHome ? '#about' : '/#about' },
     { label: 'Impact', href: isHome ? '#impact' : '/#impact' },
     { label: 'Events', href: isHome ? '#events' : '/events' },
-    { label: 'Team', href: isHome ? '#team' : '/#team' },
     { label: 'Recruitment', href: isHome ? '#recruitment' : '/#recruitment' },
+    { label: 'Gallery', href: isHome ? '#gallery' : '/gallery' },
+    { label: 'Team', href: isHome ? '#team' : '/#team' },
   ];
 
   useEffect(() => {
     if (!isHome) {
       if (pathname.startsWith('/events')) {
         setActiveIndex(2);
+      } else if (pathname.startsWith('/gallery')) {
+        setActiveIndex(4);
       }
       return;
     }
 
-    const sectionIds = ['about', 'impact', 'events', 'team', 'recruitment'];
+    const sectionIds = ['about', 'impact', 'events', 'recruitment', 'gallery', 'team'];
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -221,13 +224,14 @@ export default function Navbar() {
             { label: 'home', href: '/', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
             { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
             { label: 'events', href: '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'gallery', href: '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
             { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
             user
               ? isStaff
                 ? { label: 'admin', href: '/admin', ariaLabel: 'Admin Dashboard', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
                 : { label: 'profile', href: '/dashboard', ariaLabel: 'Profile', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }
               : { label: 'log in', href: '/login', ariaLabel: 'Log In', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
-            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
           ]}
           onMenuClick={(open) => setMobileOpen(open)}
         />

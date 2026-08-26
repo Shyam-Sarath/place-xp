@@ -22,14 +22,13 @@ const TwitterIcon = ({ className }: { className?: string }) => (
 const quickLinks = [
   { label: 'About', href: '#about' },
   { label: 'Events', href: '#events' },
-  { label: 'Team', href: '#team' },
   { label: 'Recruitment', href: '#recruitment' },
+  { label: 'Team', href: '#team' },
   { label: 'Gallery', href: '#gallery' },
 ];
 
 const resourceLinks = [
   { label: 'Resources', href: '#' },
-  { label: 'Blog', href: '#' },
   { label: 'Contact', href: '#' },
   { label: 'Privacy Policy', href: '#' },
 ];

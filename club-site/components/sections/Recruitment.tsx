@@ -222,7 +222,7 @@ export default function Recruitment() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="space-y-4 pt-6"
+              className="pt-6 flex flex-wrap gap-4 items-center justify-start"
             >
               <MagneticButton strength={0.2}>
                 <SpecularButton
@@ -249,7 +249,7 @@ export default function Recruitment() {
 
               <MagneticButton strength={0.15}>
                 <a
-                  href="#"
+                  href="#departments"
                   className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm text-text-secondary hover:text-orange-500 transition-colors group rounded-full border border-border-default/50 hover:border-orange-500/30"
                 >
                   Explore Departments

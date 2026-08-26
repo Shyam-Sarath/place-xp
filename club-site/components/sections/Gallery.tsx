@@ -3,8 +3,10 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import Masonry from '@/components/reactbits/Masonry';
+import MagneticButton from '@/components/ui/MagneticButton';
 
 // Gradient placeholders for gallery items — no AI images per user request
 const galleryItems = [
@@ -54,16 +56,21 @@ export default function Gallery() {
               Moments that <span className="text-orange-500">define us</span>
             </motion.h2>
           </div>
-          <motion.a
+          <motion.div
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            href="#"
-            className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-orange-500 transition-colors group"
           >
-            View full gallery
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
+            <MagneticButton strength={0.15}>
+              <Link
+                href="/gallery"
+                className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-orange-500 transition-colors group"
+              >
+                View full gallery
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </MagneticButton>
+          </motion.div>
         </div>
 
         {/* Gallery Interactive Component */}
