@@ -42,6 +42,12 @@ export default async function DashboardPage() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
               Everything you&apos;re <span className="text-orange-500">registered</span> for
             </h1>
+            <Link
+              href="/dashboard/slot-booking"
+              className="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-xl gradient-cta text-white text-sm font-medium hover:shadow-orange-glow transition-all"
+            >
+              Slot Booking <span aria-hidden="true">→</span>
+            </Link>
           </div>
 
           {events.length > 0 ? (

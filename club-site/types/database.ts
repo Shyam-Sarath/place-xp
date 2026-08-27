@@ -44,8 +44,31 @@ export interface EventRow {
   archived: boolean;
   rules: string | null;
   requirements: string | null;
+  slot_booking_enabled: boolean;
+  meeting_link: string | null;
+  whatsapp_link: string | null;
+  instructions: string | null;
   created_by: string | null;
   created_at: string;
+}
+
+export interface EventSlot {
+  id: string;
+  event_id: string;
+  slot_date: string;
+  start_time: string;
+  end_time: string;
+  booked_by: string | null;
+  created_at: string;
+}
+
+export interface SlotBooking extends EventSlot {
+  participant_name: string | null;
+  participant_email: string | null;
+  event_title?: string;
+}
+export interface SlotBookingSettings {
+  id: string; title: string; deadline: string | null; meeting_link: string | null; whatsapp_link: string | null; instructions: string | null; updated_at: string;
 }
 
 export interface EventTimelineStep {

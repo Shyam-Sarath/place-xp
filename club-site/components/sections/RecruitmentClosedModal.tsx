@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { CalendarClock, Sparkles, X } from 'lucide-react';
 
-export default function RecruitmentClosedModal({ onClose }: { onClose: () => void }) {
+export default function RecruitmentClosedModal({ onClose, title = 'Recruitment is not open yet', description }: { onClose: () => void; title?: string; description?: string }) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') onClose();
@@ -54,10 +54,10 @@ export default function RecruitmentClosedModal({ onClose }: { onClose: () => voi
 
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">Place XP</p>
             <h2 id="recruitment-closed-title" className="text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
-              Recruitment is not open yet
+              {title}
             </h2>
             <p id="recruitment-closed-description" className="mx-auto mt-4 max-w-sm text-sm leading-6 text-text-muted sm:text-base">
-              We are preparing the next recruitment window. Follow Place XP and check back soon for the announcement.
+              {description ?? 'We are preparing the next recruitment window. Follow Place XP and check back soon for the announcement.'}
             </p>
 
             <button

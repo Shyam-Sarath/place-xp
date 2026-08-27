@@ -6,6 +6,7 @@ import { CheckCircle2 } from 'lucide-react';
 import MagneticButton from '@/components/ui/MagneticButton';
 import RegistrationModal from '@/components/events/RegistrationModal';
 import type { EventRow, Profile } from '@/types/database';
+import { getEventStatus } from '@/lib/eventStatus';
 
 interface Props {
   event: EventRow;
@@ -18,6 +19,11 @@ interface Props {
 export default function EventRegisterAction({ event, userId, userEmail, profile, alreadyRegistered }: Props) {
   const [registered, setRegistered] = useState(alreadyRegistered);
   const [modalOpen, setModalOpen] = useState(false);
+  const past = getEventStatus(event) === 'past';
+
+  if (past) {
+    return <span className="inline-flex items-center justify-center w-full px-5 py-3 rounded-xl bg-bg-elevated text-text-muted text-sm">Registration closed</span>;
+  }
 
   if (registered) {
     return (

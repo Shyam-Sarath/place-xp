@@ -12,6 +12,7 @@ import {
   FolderOpen,
   KanbanSquare,
   Briefcase,
+  Ticket,
   Settings,
   ExternalLink,
   LogOut,
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { href: '/admin/resources', label: 'Resources', icon: FolderOpen },
   { href: '/admin/tasks', label: 'Tasks', icon: KanbanSquare },
   { href: '/admin/recruitment', label: 'Recruitment', icon: Briefcase },
+  { href: '/admin/slot-booking', label: 'Slot Booking', icon: Ticket },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

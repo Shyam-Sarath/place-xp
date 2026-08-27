@@ -54,11 +54,22 @@ export default function Navbar() {
     }
 
     const sectionIds = ['about', 'impact', 'events', 'recruitment', 'gallery', 'team'];
+    const syncHash = () => {
+      const index = sectionIds.indexOf(window.location.hash.replace('#', ''));
+      if (index >= 0) setActiveIndex(index);
+    };
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
       if (isManualNav) return;
+
+      // Once the footer scrolls into view, we're past every section — don't keep any tab lit.
+      const footer = document.getElementById('site-footer');
+      if (footer && footer.getBoundingClientRect().top < window.innerHeight) {
+        setActiveIndex(-1);
+        return;
+      }
 
       const scrollPosition = window.scrollY + 250;
 
@@ -75,8 +86,11 @@ export default function Navbar() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('hashchange', syncHash);
+    syncHash();
+    window.requestAnimationFrame(handleScroll);
+    const delayed = window.setTimeout(() => { handleScroll(); syncHash(); }, 500);
+    return () => { window.removeEventListener('scroll', handleScroll); window.removeEventListener('hashchange', syncHash); window.clearTimeout(delayed); };
   }, [pathname, isHome, isManualNav]);
 
   useEffect(() => {
@@ -170,6 +184,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             {user ? (
               <>
+                <Link href="/dashboard/slot-booking" className="text-sm text-text-secondary hover:text-orange-500 transition-colors">Slot Booking</Link>
                 {isStaff && (
                   <Link
                     href="/admin"
@@ -227,6 +242,7 @@ export default function Navbar() {
             { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
             { label: 'gallery', href: '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
             { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
+            ...(user ? [{ label: 'slots', href: '/dashboard/slot-booking', ariaLabel: 'Slot Booking', rotation: -4, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } }] : []),
             user
               ? isStaff
                 ? { label: 'admin', href: '/admin', ariaLabel: 'Admin Dashboard', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }

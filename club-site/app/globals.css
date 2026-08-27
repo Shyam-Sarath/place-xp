@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Friendly feedback surfaces used by booking and admin actions. */
+div[class*="border-orange-500\\/30"][class*="bg-orange-500\\/10"] {
+  border-radius: 1rem;
+  box-shadow: 0 14px 35px rgb(0 0 0 / 0.22);
+  backdrop-filter: blur(12px);
+}
+
 /* ========================================
    PLACE XP DESIGN SYSTEM
    ======================================== */
