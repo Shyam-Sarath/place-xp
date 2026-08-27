@@ -17,14 +17,13 @@ const galleryItems = [
 ];
 
 const masonryData = [
-  { id: 1, image: 'https://picsum.photos/400/400?grayscale&random=1', height: 400 },
-  { id: 2, image: 'https://picsum.photos/500/500?grayscale&random=2', height: 500 },
-  { id: 3, image: 'https://picsum.photos/600/600?grayscale&random=3', height: 600 },
-  { id: 4, image: 'https://picsum.photos/700/700?grayscale&random=4', height: 700 },
-  { id: 5, image: 'https://picsum.photos/300/300?grayscale&random=5', height: 300 },
-  { id: 6, image: 'https://picsum.photos/450/450?grayscale&random=6', height: 450 },
-  { id: 7, image: 'https://picsum.photos/550/550?grayscale&random=7', height: 550 },
-  { id: 8, image: 'https://picsum.photos/350/350?grayscale&random=8', height: 350 },
+  { id: 1, image: '/images/1.jpeg', height: 400 },
+  { id: 2, image: '/images/2.jpeg', height: 500 },
+  { id: 6, image: '/images/6.jpeg', height: 450 },
+  { id: 9, image: '/images/9.jpeg', height: 550 },
+  { id: 10, image: '/images/10.jpeg', height: 600},
+  { id: 7, image: '/images/7.jpeg', height: 550 },
+  { id: 8, image: '/images/8.jpeg', height: 350 },
 ];
 
 export default function Gallery() {
@@ -32,7 +31,17 @@ export default function Gallery() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <SectionWrapper id="gallery" className="py-32 md:py-40 relative bg-bg-secondary">
+    <SectionWrapper id="gallery" className="py-32 md:py-40 relative overflow-hidden">
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src="/images/video1.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+/>
+
+<div className="absolute inset-0 bg-black/60" />
       <div className="max-w-7xl mx-auto px-6 md:px-8" ref={ref}>
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
