@@ -30,8 +30,9 @@ const DEFAULT_ITEMS: MenuItem[] = [
   { label: 'home', href: '#hero', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
   { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
   { label: 'events', href: '#events', ariaLabel: 'Events', rotation: 8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-  { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 8, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
   { label: 'recruitment', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+  { label: 'gallery', href: '#gallery', ariaLabel: 'Gallery', rotation: 4, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+  { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 8, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
 ];
 
 export default function BubbleMenu({

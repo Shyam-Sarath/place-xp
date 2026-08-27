@@ -761,7 +761,7 @@ export default function Team() {
             EVERYONE HAS A ROLE
         ===================================================== */}
 
-        <div className="mt-36">
+        <div className="mt-36" id="departments">
 
           <SectionTitle
             eyebrow="Different Strengths"
