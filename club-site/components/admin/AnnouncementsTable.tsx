@@ -147,13 +147,14 @@ export default function AnnouncementsTable({
       </form>
 
       <div className="rounded-2xl border border-border-default overflow-hidden">
+        <div className="max-h-[60vh] overflow-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border-divider text-left text-xs text-text-muted">
-              <th className="px-5 py-3 font-medium">Event</th>
-              <th className="px-5 py-3 font-medium">Title</th>
-              <th className="px-5 py-3 font-medium">Posted</th>
-              <th className="px-5 py-3 font-medium">Actions</th>
+              <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Event</th>
+              <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Title</th>
+              <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Posted</th>
+              <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -209,6 +210,7 @@ export default function AnnouncementsTable({
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
