@@ -6,7 +6,7 @@ import { motion, useInView } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import MagneticButton from '@/components/ui/MagneticButton';
-import EventCard from '@/components/events/EventCard';
+import EventsCarousel from '@/components/events/EventsCarousel';
 import type { EventRow } from '@/types/database';
 
 export default function Events({ events }: { events: EventRow[] }) {
@@ -44,7 +44,7 @@ export default function Events({ events }: { events: EventRow[] }) {
             <MagneticButton strength={0.15}>
               <Link
                 href="/events"
-                className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-orange-500 transition-colors group"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-default text-sm text-text-secondary hover:text-orange-500 hover:border-orange-500/40 transition-colors group"
               >
                 View all events
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -53,13 +53,9 @@ export default function Events({ events }: { events: EventRow[] }) {
           </motion.div>
         </div>
 
-        {/* Events Grid */}
+        {/* Events Carousel */}
         {events.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} />
-            ))}
-          </div>
+          <EventsCarousel events={events} />
         ) : (
           <div className="glass rounded-2xl py-20 text-center">
             <p className="text-text-muted">New events are on the way — check back soon.</p>

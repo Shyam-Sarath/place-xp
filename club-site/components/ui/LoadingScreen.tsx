@@ -1,17 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
+const subscribeNoop = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export default function LoadingScreen() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, getClientSnapshot, getServerSnapshot);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
+    if (!mounted) return;
     const timer = setTimeout(() => setIsLoading(false), 900);
     return () => clearTimeout(timer);
-  }, []);
+  }, [mounted]);
 
   // Don't render anything on server to avoid hydration mismatch
   if (!mounted) return null;

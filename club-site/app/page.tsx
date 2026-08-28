@@ -15,14 +15,18 @@ export default async function Home() {
   let data: EventRow[] = [];
   try {
     const supabase = await createClient();
-    const { data: eventsData, error } = await supabase
-      .from('events')
-      .select('*')
-      .eq('status', 'upcoming')
-      .order('event_date', { ascending: true })
-      .limit(3);
+    const { data: eventsData, error } = await supabase.from('events').select('*');
     if (!error && eventsData) {
-      data = eventsData as EventRow[];
+      // Active (upcoming/ongoing) events first, soonest first; past events
+      // last, most-recently-happened first.
+      data = [...(eventsData as EventRow[])].sort((a, b) => {
+        const aPast = a.status === 'past';
+        const bPast = b.status === 'past';
+        if (aPast !== bPast) return aPast ? 1 : -1;
+        const aTime = a.event_date ? new Date(a.event_date).getTime() : Number.POSITIVE_INFINITY;
+        const bTime = b.event_date ? new Date(b.event_date).getTime() : Number.POSITIVE_INFINITY;
+        return aPast ? bTime - aTime : aTime - bTime;
+      });
     }
   } catch (err) {
     console.warn('Supabase is not configured or could not be reached. Local fallback to empty events list.', err);
