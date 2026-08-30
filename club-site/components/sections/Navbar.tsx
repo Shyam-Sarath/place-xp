@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect -- route changes intentionally synchronize the selected navigation item. */
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -127,7 +128,7 @@ export default function Navbar() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
-    window.location.href = '/';
+    router.replace('/');
   }
 
   return (
