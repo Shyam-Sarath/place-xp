@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import AuthForm, { type AuthRole } from '@/components/auth/AuthForm';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 
 export const metadata = {
   title: 'Log In — Place XP',
@@ -15,6 +15,10 @@ export default async function LoginPage({
 }) {
   const { role } = await searchParams;
   const defaultRole: AuthRole = role === 'admin' ? 'admin' : 'participant';
+
+  if (!isSupabaseConfigured()) {
+    return <AuthenticationUnavailable />;
+  }
 
   const supabase = await createClient();
 
@@ -62,6 +66,23 @@ export default async function LoginPage({
           </p>
           <AuthForm defaultRole={defaultRole} />
         </div>
+      </div>
+    </main>
+  );
+}
+
+function AuthenticationUnavailable() {
+  return (
+    <main className="min-h-screen gradient-hero flex items-center justify-center px-6 py-20 relative overflow-hidden">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] gradient-blue-glow rounded-full blur-3xl opacity-40 pointer-events-none" />
+      <div className="relative w-full max-w-md glass-strong rounded-2xl p-8 md:p-10 text-center">
+        <h1 className="text-2xl font-bold text-text-primary mb-3">Authentication unavailable</h1>
+        <p className="text-sm text-text-muted leading-relaxed mb-6">
+          This environment has not been connected to the club&apos;s authentication service yet.
+        </p>
+        <Link href="/" className="text-sm text-orange-500 hover:text-orange-400 transition-colors">
+          Return to the homepage
+        </Link>
       </div>
     </main>
   );
