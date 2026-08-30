@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -30,20 +30,53 @@ const masonryData = [
 
 export default function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let isIntersecting = false;
+
+    const playOrPause = () => {
+      if (document.hidden || !isIntersecting) {
+        video.pause();
+      } else {
+        video.play().catch(() => {});
+      }
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        playOrPause();
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(video);
+
+    document.addEventListener('visibilitychange', playOrPause);
+
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', playOrPause);
+    };
+  }, []);
 
   return (
     <SectionWrapper id="gallery" className="py-32 md:py-40 relative overflow-hidden">
       <video
+        ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src="/images/video1.mp4"
-        autoPlay
         muted
         loop
         playsInline
-/>
+        preload="none"
+      />
 
-<div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/60" />
       <div className="max-w-7xl mx-auto px-6 md:px-8" ref={ref}>
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">

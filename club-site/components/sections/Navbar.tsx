@@ -195,7 +195,7 @@ export default function Navbar() {
             )}
             <MagneticButton strength={0.2}>
               <a
-                href="#recruitment"
+                href={isHome ? '#recruitment' : '/#recruitment'}
                 className="px-5 py-2.5 text-sm font-medium rounded-full gradient-cta text-white transition-all duration-300 hover:shadow-orange-glow hover:scale-105"
               >
                 Join Us
@@ -222,11 +222,11 @@ export default function Navbar() {
           useFixedPosition={true}
           items={[
             { label: 'home', href: '/', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
-            { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
-            { label: 'events', href: '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'gallery', href: '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
+            { label: 'about', href: isHome ? '#about' : '/#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
+            { label: 'events', href: isHome ? '#events' : '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'join us', href: isHome ? '#recruitment' : '/#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'gallery', href: isHome ? '#gallery' : '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'team', href: isHome ? '#team' : '/#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
             user
               ? isStaff
                 ? { label: 'admin', href: '/admin', ariaLabel: 'Admin Dashboard', rotation: 5, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } }

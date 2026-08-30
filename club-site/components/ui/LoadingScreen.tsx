@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function LoadingScreen() {
@@ -44,7 +45,7 @@ export default function LoadingScreen() {
               transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="w-16 h-16 rounded-2xl overflow-hidden shadow-blue-glow"
             >
-              <img src="/logo.png" alt="Place XP" className="w-full h-full object-cover" />
+              <Image src="/logo.png" alt="Place XP" width={64} height={64} priority className="w-full h-full object-cover" />
             </motion.div>
 
             {/* Text */}

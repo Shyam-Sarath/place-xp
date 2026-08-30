@@ -30,7 +30,9 @@ export default function ShinyText({
   direction = 'left',
   delay = 0,
 }: ShinyTextProps) {
+  const spanRef = useRef<HTMLSpanElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const isVisibleRef = useRef(true);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
@@ -39,8 +41,23 @@ export default function ShinyText({
   const animationDuration = speed * 1000;
   const delayDuration = delay * 1000;
 
+  useEffect(() => {
+    const el = spanRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    io.observe(el);
+
+    return () => io.disconnect();
+  }, []);
+
   useAnimationFrame((time) => {
-    if (disabled || isPaused) {
+    if (disabled || isPaused || document.hidden || !isVisibleRef.current) {
       lastTimeRef.current = null;
       return;
     }
@@ -110,6 +127,7 @@ export default function ShinyText({
 
   return (
     <motion.span
+      ref={spanRef}
       className={`shiny-text ${className}`}
       style={{ ...gradientStyle, backgroundPosition }}
       onMouseEnter={handleMouseEnter}

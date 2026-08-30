@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MapPin } from 'lucide-react';
@@ -19,21 +20,24 @@ const TwitterIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
 );
 
-const quickLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Events', href: '#events' },
-  { label: 'Recruitment', href: '#recruitment' },
-  { label: 'Team', href: '#team' },
-  { label: 'Gallery', href: '#gallery' },
-];
-
-const resourceLinks = [
-  { label: 'Resources', href: '#' },
-  { label: 'Contact', href: '#' },
-  { label: 'Privacy Policy', href: '#' },
-];
-
 export default function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const quickLinks = [
+    { label: 'About', href: isHome ? '#about' : '/#about' },
+    { label: 'Events', href: isHome ? '#events' : '/events' },
+    { label: 'Recruitment', href: isHome ? '#recruitment' : '/#recruitment' },
+    { label: 'Team', href: isHome ? '#team' : '/#team' },
+    { label: 'Gallery', href: isHome ? '#gallery' : '/gallery' },
+  ];
+
+  const resourceLinks = [
+    { label: 'Events', href: '/events' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Contact', href: 'mailto:placexp@vit.ac.in' },
+  ];
+
   const [socialLinks, setSocialLinks] = useState<
     { icon: typeof InstagramIcon; href: string; label: string }[]
   >([]);

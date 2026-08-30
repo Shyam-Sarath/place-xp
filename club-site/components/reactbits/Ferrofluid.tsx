@@ -236,13 +236,18 @@ export default function Ferrofluid({
   const rendererRef = useRef<any>(null);
   const mouseTargetRef = useRef([0, 0]);
   const lastTimeRef = useRef(0);
+  const pausedRef = useRef(paused);
+  const isVisibleRef = useRef(true);
+
+  pausedRef.current = paused;
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    const effectiveDpr = dpr ?? (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1);
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+      dpr: effectiveDpr,
       alpha: true,
       antialias: true,
     });
@@ -304,7 +309,16 @@ export default function Ferrofluid({
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    io.observe(container);
+
     const onPointerMove = (e: PointerEvent) => {
+      if (!isVisibleRef.current) return;
       const rect = canvas.getBoundingClientRect();
       const sc = renderer.dpr || 1;
       const x = (e.clientX - rect.left) * sc;
@@ -321,7 +335,12 @@ export default function Ferrofluid({
 
     const loop = (t: number) => {
       rafRef.current = requestAnimationFrame(loop);
-      (uniforms.iTime.value as unknown as { value: number }).valueOf;
+
+      if (document.hidden || !isVisibleRef.current || pausedRef.current) {
+        lastTimeRef.current = 0;
+        return;
+      }
+
       uniforms.iTime.value = t * 0.001;
       if (mouseDampening > 0) {
         if (!lastTimeRef.current) lastTimeRef.current = t;
@@ -337,7 +356,7 @@ export default function Ferrofluid({
       } else {
         lastTimeRef.current = t;
       }
-      if (!paused && programRef.current && meshRef.current) {
+      if (programRef.current && meshRef.current) {
         try {
           renderer.render({ scene: meshRef.current });
         } catch {
@@ -351,12 +370,14 @@ export default function Ferrofluid({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove);
       ro.disconnect();
+      io.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);
       }
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [
-    dpr, paused, colors, speed, scale, turbulence, fluidity,
+    dpr, colors, speed, scale, turbulence, fluidity,
     rimWidth, sharpness, shimmer, glow, flowDirection, opacity,
     mouseInteraction, mouseStrength, mouseRadius, mouseDampening,
   ]);
