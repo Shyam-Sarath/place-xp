@@ -9,7 +9,7 @@ import SpecularButton from '@/components/reactbits/SpecularButton';
 import MagneticButton from '@/components/ui/MagneticButton';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import RecruitmentClosedModal from '@/components/sections/RecruitmentClosedModal';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +35,11 @@ export default function Recruitment() {
   useEffect(() => {
     // Fetch recruitment closing time on mount
     const fetchRecruitmentStatus = async () => {
+      if (!isSupabaseConfigured()) {
+        setRecruitmentOpen(false);
+        return;
+      }
+
       const supabase = createClient();
       const { data: settings } = await supabase
         .from('site_settings')

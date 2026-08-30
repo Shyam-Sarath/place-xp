@@ -9,7 +9,7 @@ import type { User } from '@supabase/supabase-js';
 import GooeyNav from '@/components/reactbits/GooeyNav';
 import BubbleMenu from '@/components/reactbits/BubbleMenu';
 import MagneticButton from '@/components/ui/MagneticButton';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -80,6 +80,8 @@ export default function Navbar() {
   }, [pathname, isHome, isManualNav]);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
     const supabase = createClient();
     let active = true;
 

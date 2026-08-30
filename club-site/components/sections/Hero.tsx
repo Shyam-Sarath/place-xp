@@ -9,7 +9,7 @@ import ShinyText from '@/components/reactbits/ShinyText';
 import SpecularButton from '@/components/reactbits/SpecularButton';
 import MagneticButton from '@/components/ui/MagneticButton';
 import RecruitmentClosedModal from '@/components/sections/RecruitmentClosedModal';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function Hero() {
   const headlineRef = useRef<HTMLDivElement>(null);
@@ -19,6 +19,11 @@ export default function Hero() {
   useEffect(() => {
     // Fetch recruitment closing time on mount
     const fetchRecruitmentStatus = async () => {
+      if (!isSupabaseConfigured()) {
+        setRecruitmentOpen(false);
+        return;
+      }
+
       const supabase = createClient();
       const { data: settings } = await supabase
         .from('site_settings')

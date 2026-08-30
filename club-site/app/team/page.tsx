@@ -1,6 +1,7 @@
 'use client';
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import Navbar from "@/components/sections/Navbar";
 import Footer from "@/components/sections/Footer";
@@ -83,9 +84,9 @@ export default function TeamPage() {
       <section className="py-24 px-6 text-center">
         <h2 className="text-5xl font-bold">Join PlaceXP</h2>
         <p className="mt-4 text-text-secondary max-w-2xl mx-auto">Become part of a vibrant student community and build your future with us.</p>
-        <a href="/#recruitment" className="inline-block mt-8 rounded-full bg-orange-500 px-8 py-4 font-semibold hover:bg-orange-600 transition">
+        <Link href="/#recruitment" className="inline-block mt-8 rounded-full bg-orange-500 px-8 py-4 font-semibold hover:bg-orange-600 transition">
           Join Now
-        </a>
+        </Link>
       </section>
 
       <Footer />
