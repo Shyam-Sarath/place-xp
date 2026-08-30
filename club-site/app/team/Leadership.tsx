@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @next/next/no-img-element -- remote team photos are rendered in a CSS-driven card layout. */
 
 import { motion } from "motion/react";
 import { leadership } from "@/app/team/teamData";

@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- portraits are loaded from configurable external sources. */
 
 import { motion } from "motion/react";
 import {

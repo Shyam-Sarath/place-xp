@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect, react-hooks/purity -- particles are generated only in click handlers. */
 import { useRef, useEffect, useState } from 'react';
 import './GooeyNav.css';
 
@@ -41,7 +42,7 @@ const GooeyNav = ({
     if (externalActiveIndex !== undefined && externalActiveIndex !== activeIndex) {
       setActiveIndex(externalActiveIndex);
     }
-  }, [externalActiveIndex]);
+  }, [externalActiveIndex, activeIndex]);
 
   const noise = (n = 1) => n / 2 - Math.random() * n;
 
@@ -51,7 +52,7 @@ const GooeyNav = ({
   };
 
   const createParticle = (i: number, t: number, d: [number, number], r: number) => {
-    let rotate = noise(r / 10);
+    const rotate = noise(r / 10);
     return {
       start: getXY(d[0], particleCount - i, particleCount),
       end: getXY(d[1] + noise(7), particleCount - i, particleCount),
@@ -148,7 +149,7 @@ const GooeyNav = ({
       e.preventDefault();
       const liEl = e.currentTarget.parentElement;
       if (liEl) {
-        handleClick(e as any, index);
+        handleClick(e as unknown as React.MouseEvent<HTMLAnchorElement>, index);
       }
     }
   };

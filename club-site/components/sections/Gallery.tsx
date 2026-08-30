@@ -8,16 +8,6 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 import Masonry from '@/components/reactbits/Masonry';
 import MagneticButton from '@/components/ui/MagneticButton';
 
-// Gradient placeholders for gallery items — no AI images per user request
-const galleryItems = [
-  { title: 'Workshop Session', gradient: 'from-blue-600/30 via-blue-800/20 to-bg-card', span: 'col-span-2 row-span-2' },
-  { title: 'Hackathon 2024', gradient: 'from-orange-500/25 via-orange-700/15 to-bg-card', span: '' },
-  { title: 'Team Building', gradient: 'from-green-500/20 via-green-800/10 to-bg-card', span: '' },
-  { title: 'Code Sprint', gradient: 'from-purple-500/25 via-purple-800/15 to-bg-card', span: '' },
-  { title: 'Industry Visit', gradient: 'from-blue-400/25 via-blue-700/15 to-bg-card', span: '' },
-  { title: 'Award Ceremony', gradient: 'from-orange-400/30 via-orange-600/15 to-bg-card', span: 'col-span-2' },
-];
-
 const masonryData = [
   { id: 1, image: '/images/1.jpeg', height: 400 },
   { id: 2, image: '/images/2.jpeg', height: 500 },

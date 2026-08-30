@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import WebSocket from 'ws';
 
 if (typeof globalThis.WebSocket === 'undefined') {
   try {
-    globalThis.WebSocket = require('ws');
+    globalThis.WebSocket = WebSocket as typeof globalThis.WebSocket;
   } catch {
     // ignore
   }

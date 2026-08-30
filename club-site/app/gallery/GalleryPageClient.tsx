@@ -1,9 +1,9 @@
 'use client';
+/* eslint-disable @next/next/no-img-element -- the gallery needs native image sizing for its modal layout. */
 
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ZoomIn, Info } from 'lucide-react';
-import Masonry from '@/components/reactbits/Masonry';
 
 interface GalleryItem {
   id: number;

@@ -179,7 +179,7 @@ export default function Recruitment() {
               <div className="timeline-line absolute left-[18px] md:left-[22px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-orange-500 via-blue-500/60 to-border-divider" />
 
               <div className="space-y-10">
-                {timelineSteps.map((step, index) => (
+                {timelineSteps.map((step) => (
                   <div key={step.label} className="timeline-step relative flex items-start gap-5" style={{ opacity: 0 }}>
                     {/* Step number */}
                     <div className="absolute -left-12 md:-left-16 top-0.5 w-10 h-10 rounded-xl bg-bg-card border border-border-default flex items-center justify-center z-10 group-hover:border-orange-500/30 transition-colors">

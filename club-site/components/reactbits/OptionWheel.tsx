@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/refs, react-hooks/immutability -- requestAnimationFrame reads the latest options from refs. */
 
 import { useRef, useState, useCallback, useEffect } from 'react';
 import './OptionWheel.css';

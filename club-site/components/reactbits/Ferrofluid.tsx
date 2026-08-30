@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/refs -- animation state is intentionally stored outside React renders. */
 
 import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';

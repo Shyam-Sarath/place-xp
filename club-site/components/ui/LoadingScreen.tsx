@@ -5,17 +5,12 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function LoadingScreen() {
-  const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
     const timer = setTimeout(() => setIsLoading(false), 900);
     return () => clearTimeout(timer);
   }, []);
-
-  // Don't render anything on server to avoid hydration mismatch
-  if (!mounted) return null;
 
   return (
     <AnimatePresence>

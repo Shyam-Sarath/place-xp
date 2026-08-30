@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @next/next/no-img-element -- menu logos may be supplied as dynamic image URLs. */
 
 import { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';

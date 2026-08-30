@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/refs -- the WebGL loop reads current visual props from a ref. */
 
 import { useRef, useEffect, ReactNode, MouseEventHandler } from 'react';
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';

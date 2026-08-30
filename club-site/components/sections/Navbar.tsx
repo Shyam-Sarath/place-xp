@@ -1,8 +1,9 @@
 'use client';
+/* eslint-disable react-hooks/set-state-in-effect -- route changes intentionally synchronize the selected navigation item. */
 
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
@@ -14,7 +15,7 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isStaff, setIsStaff] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -79,6 +80,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname, isHome, isManualNav]);
 
+  // The active item mirrors the current route after navigation.
+   
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
 

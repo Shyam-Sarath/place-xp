@@ -2,8 +2,20 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTransition, a } from '@react-spring/web';
 import './Masonry.css';
 
+interface MasonryItem {
+  height: number;
+  image: string;
+  [key: string]: unknown;
+}
+
+interface GridItem extends MasonryItem {
+  x: number;
+  y: number;
+  width: number;
+}
+
 interface MasonryProps {
-  data: any[];
+  data: MasonryItem[];
   keys?: string;
   columns?: number;
   gap?: number;
@@ -41,7 +53,7 @@ const Masonry = ({
 
   const [heights, gridItems] = useMemo(() => {
     const heights = new Array(columnsState).fill(0);
-    const gridItems = data.map((child, i) => {
+    const gridItems = data.map((child) => {
       const column = heights.indexOf(Math.min(...heights));
       const x = (width / columnsState) * column;
       const y = (heights[column] += child.height / 2) - child.height / 2;
@@ -51,7 +63,7 @@ const Masonry = ({
   }, [columnsState, data, width]);
 
   const transitions = useTransition(gridItems, {
-    key: (item: any) => item[keys] || Math.random(),
+    key: (item: GridItem) => String(item[keys] ?? item.image),
     from: ({ x, y, width, height }) => ({ x, y, width, height, opacity: 0 }),
     enter: ({ x, y, width, height }) => ({ x, y, width, height, opacity: 1 }),
     update: ({ x, y, width, height }) => ({ x, y, width, height }),
@@ -61,7 +73,7 @@ const Masonry = ({
   });
 
   return (
-    <div ref={ref} className="masonry" style={{ height: Math.max(...heights) }}>
+    <div ref={ref} className="masonry" style={{ height: Math.max(height, ...heights), gap }}>
       {transitions((style, item) => (
         <a.div className="masonry-item" style={style}>
           <div
