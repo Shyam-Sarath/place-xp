@@ -6,7 +6,7 @@ import { motion, useInView } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import MagneticButton from '@/components/ui/MagneticButton';
-import EventsCarousel from '@/components/events/EventsCarousel';
+import EventCard from '@/components/events/EventCard';
 import type { EventRow } from '@/types/database';
 
 export default function Events({ events }: { events: EventRow[] }) {
@@ -53,9 +53,13 @@ export default function Events({ events }: { events: EventRow[] }) {
           </motion.div>
         </div>
 
-        {/* Events Carousel */}
+        {/* Events Grid */}
         {events.length > 0 ? (
-          <EventsCarousel events={events} />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event, index) => (
+              <EventCard key={event.id} event={event} index={index} />
+            ))}
+          </div>
         ) : (
           <div className="glass rounded-2xl py-20 text-center">
             <p className="text-text-muted">New events are on the way — check back soon.</p>
