@@ -1,20 +1,22 @@
 'use client';
+/* eslint-disable react-hooks/set-state-in-effect -- route changes intentionally synchronize the selected navigation item. */
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'motion/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 import GooeyNav from '@/components/reactbits/GooeyNav';
 import BubbleMenu from '@/components/reactbits/BubbleMenu';
 import MagneticButton from '@/components/ui/MagneticButton';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [, setMobileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isStaff, setIsStaff] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -88,7 +90,11 @@ export default function Navbar() {
     return () => { window.removeEventListener('scroll', handleScroll); window.removeEventListener('hashchange', syncHash); window.clearTimeout(delayed); };
   }, [pathname, isHome, isManualNav]);
 
+  // The active item mirrors the current route after navigation.
+   
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
     const supabase = createClient();
     let active = true;
 
@@ -131,7 +137,7 @@ export default function Navbar() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
-    window.location.href = '/';
+    router.replace('/');
   }
 
   return (
@@ -205,7 +211,7 @@ export default function Navbar() {
             )}
             <MagneticButton strength={0.2}>
               <a
-                href="#recruitment"
+                href={isHome ? '#recruitment' : '/#recruitment'}
                 className="px-5 py-2.5 text-sm font-medium rounded-full gradient-cta text-white transition-all duration-300 hover:shadow-orange-glow hover:scale-105"
               >
                 Join Us
@@ -232,11 +238,11 @@ export default function Navbar() {
           useFixedPosition={true}
           items={[
             { label: 'home', href: '/', ariaLabel: 'Home', rotation: -8, hoverStyles: { bgColor: '#29498B', textColor: '#ffffff' } },
-            { label: 'about', href: '#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
-            { label: 'events', href: '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'join us', href: '#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'gallery', href: '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
-            { label: 'team', href: '#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
+            { label: 'about', href: isHome ? '#about' : '/#about', ariaLabel: 'About', rotation: 8, hoverStyles: { bgColor: '#203B72', textColor: '#ffffff' } },
+            { label: 'events', href: isHome ? '#events' : '/events', ariaLabel: 'Events', rotation: -5, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'join us', href: isHome ? '#recruitment' : '/#recruitment', ariaLabel: 'Recruitment', rotation: -8, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'gallery', href: isHome ? '#gallery' : '/gallery', ariaLabel: 'Gallery', rotation: 3, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } },
+            { label: 'team', href: isHome ? '#team' : '/#team', ariaLabel: 'Team', rotation: 6, hoverStyles: { bgColor: '#132238', textColor: '#ffffff' } },
             ...(user ? [{ label: 'slots', href: '/dashboard/slot-booking', ariaLabel: 'Slot Booking', rotation: -4, hoverStyles: { bgColor: '#F89A4A', textColor: '#ffffff' } }] : []),
             user
               ? isStaff

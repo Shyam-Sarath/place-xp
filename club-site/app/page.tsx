@@ -8,12 +8,15 @@ import Recruitment from '@/components/sections/Recruitment';
 import Gallery from '@/components/sections/Gallery';
 import Team from '@/components/sections/Team';
 import Footer from '@/components/sections/Footer';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import type { EventRow } from '@/types/database';
 
 export default async function Home() {
   let data: EventRow[] = [];
   try {
+    if (!isSupabaseConfigured()) {
+      return renderHome(data);
+    }
     const supabase = await createClient();
     const { data: eventsData, error } = await supabase.from('events').select('*');
     if (!error && eventsData) {
@@ -32,6 +35,10 @@ export default async function Home() {
     console.warn('Supabase is not configured or could not be reached. Local fallback to empty events list.', err);
   }
 
+  return renderHome(data);
+}
+
+function renderHome(data: EventRow[]) {
   return (
     <main className="relative">
       <Navbar />

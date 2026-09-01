@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/refs -- the WebGL loop reads current visual props from a ref. */
 
 import { useRef, useEffect, ReactNode, MouseEventHandler } from 'react';
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl';
@@ -124,7 +125,7 @@ export default function SpecularButton({
     const fx = fxRef.current;
     if (!btn || !fx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
     let renderer: Renderer;
     try {
       renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: true, dpr });
@@ -180,9 +181,19 @@ export default function SpecularButton({
     ro.observe(btn);
     resize();
 
+    let isVisible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    io.observe(btn);
+
     let pointerAngle: number | null = null;
     let proximityT = 0;
     const onPointerMove = (e: PointerEvent) => {
+      if (!isVisible) return;
       const rect = btn.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
@@ -200,7 +211,7 @@ export default function SpecularButton({
       const t = Math.max(0, 1 - dist / Math.max(prox, 1));
       proximityT = t * t * (3 - 2 * t);
     };
-    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
 
     let angle = 2.4;
     let idleAngle = 2.4;
@@ -215,6 +226,12 @@ export default function SpecularButton({
 
     const update = (now: number) => {
       raf = requestAnimationFrame(update);
+
+      if (document.hidden || !isVisible) {
+        last = now;
+        return;
+      }
+
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       const p = propsRef.current;
@@ -278,6 +295,7 @@ export default function SpecularButton({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
       if (gl.canvas.parentNode === fx) fx.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();

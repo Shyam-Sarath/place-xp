@@ -11,10 +11,25 @@ const TABS: { key: EventStatus; label: string }[] = [
   { key: 'past', label: 'Past' },
 ];
 
+function getEventStatus(e: EventRow): EventStatus {
+  if (e.status) return e.status;
+  if (!e.event_date) return 'upcoming';
+  const eventDate = new Date(e.event_date);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetDate = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+  if (targetDate < today) return 'past';
+  if (targetDate.getTime() === today.getTime()) return 'ongoing';
+  return 'upcoming';
+}
+
 export default function EventsPageClient({ events }: { events: EventRow[] }) {
   const [tab, setTab] = useState<EventStatus>('upcoming');
 
-  const filtered = useMemo(() => events.filter((e) => e.status === tab), [events, tab]);
+  const filtered = useMemo(
+    () => events.filter((e) => getEventStatus(e) === tab),
+    [events, tab]
+  );
 
   return (
     <section className="pt-36 md:pt-44 pb-32 relative">

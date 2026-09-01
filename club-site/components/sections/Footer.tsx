@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MapPin } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 // Proper, recognizable brand marks (Simple Icons paths) — not generic
 // outline glyphs — so these read unmistakably as Instagram/LinkedIn/YouTube.
@@ -24,26 +25,31 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const quickLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Events', href: '#events' },
-  { label: 'Recruitment', href: '#recruitment' },
-  { label: 'Team', href: '#team' },
-  { label: 'Gallery', href: '#gallery' },
-];
-
-const resourceLinks = [
-  { label: 'Resources', href: '#' },
-  { label: 'Contact', href: '#' },
-  { label: 'Privacy Policy', href: '#' },
-];
-
 export default function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const quickLinks = [
+    { label: 'About', href: isHome ? '#about' : '/#about' },
+    { label: 'Events', href: isHome ? '#events' : '/events' },
+    { label: 'Recruitment', href: isHome ? '#recruitment' : '/#recruitment' },
+    { label: 'Team', href: isHome ? '#team' : '/#team' },
+    { label: 'Gallery', href: isHome ? '#gallery' : '/gallery' },
+  ];
+
+  const resourceLinks = [
+    { label: 'Events', href: '/events' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Contact', href: 'mailto:placexp@vit.ac.in' },
+  ];
+
   const [socialLinks, setSocialLinks] = useState<
     { icon: typeof InstagramIcon; href: string; label: string }[]
   >([]);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
     const supabase = createClient();
     let active = true;
 

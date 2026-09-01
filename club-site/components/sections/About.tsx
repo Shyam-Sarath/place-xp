@@ -4,7 +4,6 @@ import { motion, useInView } from 'motion/react';
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Target, Eye } from 'lucide-react';
-import ScrollReveal from '@/components/reactbits/ScrollReveal';
 import OptionWheel from '@/components/reactbits/OptionWheel';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 

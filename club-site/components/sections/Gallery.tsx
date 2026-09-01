@@ -1,22 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import SectionWrapper from '@/components/ui/SectionWrapper';
 import Masonry from '@/components/reactbits/Masonry';
 import MagneticButton from '@/components/ui/MagneticButton';
-
-// Gradient placeholders for gallery items — no AI images per user request
-const galleryItems = [
-  { title: 'Workshop Session', gradient: 'from-blue-600/30 via-blue-800/20 to-bg-card', span: 'col-span-2 row-span-2' },
-  { title: 'Hackathon 2024', gradient: 'from-orange-500/25 via-orange-700/15 to-bg-card', span: '' },
-  { title: 'Team Building', gradient: 'from-green-500/20 via-green-800/10 to-bg-card', span: '' },
-  { title: 'Code Sprint', gradient: 'from-purple-500/25 via-purple-800/15 to-bg-card', span: '' },
-  { title: 'Industry Visit', gradient: 'from-blue-400/25 via-blue-700/15 to-bg-card', span: '' },
-  { title: 'Award Ceremony', gradient: 'from-orange-400/30 via-orange-600/15 to-bg-card', span: 'col-span-2' },
-];
 
 const masonryData = [
   { id: 1, image: '/images/1.jpeg', height: 400 },
@@ -30,20 +20,53 @@ const masonryData = [
 
 export default function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let isIntersecting = false;
+
+    const playOrPause = () => {
+      if (document.hidden || !isIntersecting) {
+        video.pause();
+      } else {
+        video.play().catch(() => {});
+      }
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        playOrPause();
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(video);
+
+    document.addEventListener('visibilitychange', playOrPause);
+
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', playOrPause);
+    };
+  }, []);
 
   return (
     <SectionWrapper id="gallery" className="py-32 md:py-40 relative overflow-hidden">
       <video
+        ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src="/images/video1.mp4"
-        autoPlay
         muted
         loop
         playsInline
-/>
+        preload="none"
+      />
 
-<div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/60" />
       <div className="max-w-7xl mx-auto px-6 md:px-8" ref={ref}>
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">

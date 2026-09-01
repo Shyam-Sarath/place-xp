@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import type { EventRow } from '@/types/database';
 import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -9,16 +9,30 @@ export const metadata = {
 };
 
 export default async function EventsPage() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('events')
-    .select('*')
-    .order('event_date', { ascending: true });
+  let data: EventRow[] = [];
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: events, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('event_date', { ascending: true });
+
+      if (error) {
+        console.error('[EventsPage] Error fetching events from Supabase:', error);
+      } else {
+        data = (events ?? []) as EventRow[];
+      }
+    } catch (error) {
+      console.error('[EventsPage] Unable to load events from Supabase:', error);
+    }
+  }
 
   return (
     <main className="relative min-h-screen">
       <Navbar />
-      <EventsPageClient events={(data ?? []) as EventRow[]} />
+      <EventsPageClient events={data} />
       <Footer />
     </main>
   );

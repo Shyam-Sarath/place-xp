@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect, react-hooks/purity -- particles are generated only in click handlers. */
 import { useRef, useEffect, useState } from 'react';
 import './GooeyNav.css';
 

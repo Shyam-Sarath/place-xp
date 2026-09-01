@@ -1,6 +1,10 @@
 'use client';
 
+import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
+import Navbar from "@/components/sections/Navbar";
+import Footer from "@/components/sections/Footer";
 
 const faculty = {
   name: "Dr. Rajarajeshwari S",
@@ -25,8 +29,10 @@ const values = [
 
 export default function TeamPage() {
   return (
-    <main className="min-h-screen bg-background text-white">
-      <section className="relative flex min-h-screen items-center justify-center px-6">
+    <main className="min-h-screen bg-background text-white relative">
+      <Navbar />
+
+      <section className="relative flex min-h-screen items-center justify-center px-6 pt-24">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 h-72 w-72 rounded-full bg-orange-500/15 blur-3xl" />
           <div className="absolute bottom-20 right-20 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl" />
@@ -41,7 +47,7 @@ export default function TeamPage() {
       <section className="py-24 px-6 max-w-6xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-12">Faculty Coordinator</h2>
         <div className="rounded-3xl bg-white/5 border border-white/10 p-8 flex flex-col md:flex-row items-center gap-8">
-          <img src={faculty.image} alt={faculty.name} className="w-48 h-48 rounded-full border-4 border-orange-500"/>
+          <Image src={faculty.image} alt={faculty.name} width={192} height={192} className="w-48 h-48 rounded-full border-4 border-orange-500 object-cover"/>
           <div>
             <h3 className="text-3xl font-bold">{faculty.name}</h3>
             <p className="text-orange-500 mt-2">{faculty.role}</p>
@@ -55,7 +61,7 @@ export default function TeamPage() {
         <div className="grid md:grid-cols-3 gap-8">
           {leadership.map(m=>(
             <div key={m.name} className="rounded-3xl bg-white/5 border border-white/10 p-6 text-center">
-              <img src={m.image} alt={m.name} className="w-40 h-40 rounded-full mx-auto border-4 border-orange-500"/>
+              <Image src={m.image} alt={m.name} width={160} height={160} className="w-40 h-40 rounded-full mx-auto border-4 border-orange-500 object-cover"/>
               <h3 className="mt-6 text-2xl font-bold">{m.name}</h3>
               <p className="text-orange-500">{m.role}</p>
             </div>
@@ -78,10 +84,12 @@ export default function TeamPage() {
       <section className="py-24 px-6 text-center">
         <h2 className="text-5xl font-bold">Join PlaceXP</h2>
         <p className="mt-4 text-text-secondary max-w-2xl mx-auto">Become part of a vibrant student community and build your future with us.</p>
-        <a href="/recruitment" className="inline-block mt-8 rounded-full bg-orange-500 px-8 py-4 font-semibold hover:bg-orange-600 transition">
+        <Link href="/#recruitment" className="inline-block mt-8 rounded-full bg-orange-500 px-8 py-4 font-semibold hover:bg-orange-600 transition">
           Join Now
-        </a>
+        </Link>
       </section>
+
+      <Footer />
     </main>
   );
 }
