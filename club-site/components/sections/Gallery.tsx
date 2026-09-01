@@ -48,22 +48,15 @@ export default function Gallery() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
           <div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5 }}
-              className="inline-block text-sm uppercase tracking-[0.2em] text-orange-500 font-medium mb-4"
-            >
+            <span className="inline-block text-sm uppercase tracking-[0.2em] text-orange-500 font-medium mb-4 animate-fade-in-up">
               Gallery
-            </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight"
+            </span>
+            <h2
+              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight animate-fade-in-up"
+              style={{ animationDelay: '0.1s' }}
             >
               Moments that <span className="text-orange-500">define us</span>
-            </motion.h2>
+            </h2>
           </div>
           <motion.div
             initial={{ opacity: 0 }}

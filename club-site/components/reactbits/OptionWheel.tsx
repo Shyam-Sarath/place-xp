@@ -69,22 +69,25 @@ export default function OptionWheel({
   const [isDragging, setIsDragging] = useState(false);
 
   const remPx = typeof window !== 'undefined' ? parseFloat(getComputedStyle(document.documentElement).fontSize) || 16 : 16;
+  const runFrameRef = useRef<(now: number) => void>(() => {});
 
-  onChangeRef.current = onChange;
-  cfgRef.current = {
-    count: items.length,
-    items,
-    rowH: Math.max(fontSize * spacing * remPx, 1),
-    curve,
-    tilt,
-    blur,
-    fade,
-    minOpacity,
-    side,
-    loop,
-    smoothing,
-    draggable,
-  };
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    cfgRef.current = {
+      count: items.length,
+      items,
+      rowH: Math.max(fontSize * spacing * remPx, 1),
+      curve,
+      tilt,
+      blur,
+      fade,
+      minOpacity,
+      side,
+      loop,
+      smoothing,
+      draggable,
+    };
+  });
 
   const runFrame = useCallback((now: number) => {
     const dt = Math.min((now - lastRef.current) / 1000, 0.05);
@@ -129,8 +132,12 @@ export default function OptionWheel({
       el.style.setProperty('--ow-p', Math.max(0, 1 - Math.min(dist, 1)).toFixed(4));
     }
 
-    rafRef.current = settled ? null : requestAnimationFrame(runFrame);
+    rafRef.current = settled ? null : requestAnimationFrame(runFrameRef.current);
   }, []);
+
+  useEffect(() => {
+    runFrameRef.current = runFrame;
+  }, [runFrame]);
 
   const startLoop = useCallback(() => {
     if (rafRef.current != null) return;

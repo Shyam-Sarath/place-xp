@@ -6,7 +6,7 @@ import { Loader2, Trash2, Archive, ArchiveRestore, Eye, EyeOff, Copy } from 'luc
 import { createClient } from '@/lib/supabase/client';
 import MagneticButton from '@/components/ui/MagneticButton';
 import FileUploadInput from '@/components/admin/FileUploadInput';
-import type { EventRow, EventStatus } from '@/types/database';
+import type { EventRow } from '@/types/database';
 
 const inputClasses =
   'w-full rounded-xl bg-bg-elevated/50 border border-border-default px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/40 transition-colors';
@@ -33,7 +33,6 @@ export default function EventForm({ event }: { event?: EventRow }) {
   const [slug, setSlug] = useState(event?.slug ?? '');
   const [slugTouched, setSlugTouched] = useState(isEdit);
   const [category, setCategory] = useState(event?.category ?? '');
-  const [status, setStatus] = useState<EventStatus>(event?.status ?? 'upcoming');
   const [shortDescription, setShortDescription] = useState(event?.short_description ?? '');
   const [description, setDescription] = useState(event?.description ?? '');
   const [objectives, setObjectives] = useState(event?.objectives ?? '');
@@ -48,13 +47,13 @@ export default function EventForm({ event }: { event?: EventRow }) {
   const [bannerUrl, setBannerUrl] = useState<string | null>(event?.banner_url ?? null);
   const [rules, setRules] = useState(event?.rules ?? '');
   const [requirements, setRequirements] = useState(event?.requirements ?? '');
+  const [status, setStatus] = useState(event?.status ?? 'upcoming');
 
   function buildPayload() {
     return {
       title,
       slug,
       category: category || null,
-      status,
       short_description: shortDescription || null,
       description: description || null,
       objectives: objectives || null,
@@ -67,6 +66,7 @@ export default function EventForm({ event }: { event?: EventRow }) {
       banner_url: bannerUrl,
       rules: rules || null,
       requirements: requirements || null,
+      status,
     };
   }
 
@@ -283,11 +283,10 @@ export default function EventForm({ event }: { event?: EventRow }) {
           </div>
           <div>
             <label className={labelClasses}>Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value as EventStatus)} className={inputClasses}>
-              <option value="upcoming">Upcoming</option>
-              <option value="ongoing">Ongoing</option>
-              <option value="past">Past</option>
+            <select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} className={inputClasses}>
+              <option value="upcoming">Upcoming (automated)</option><option value="ongoing">Ongoing</option><option value="past">Past Event</option>
             </select>
+            <p className="text-xs text-text-muted mt-1">Upcoming changes to Ongoing after the deadline and Past after the event date.</p>
           </div>
         </div>
 

@@ -19,6 +19,25 @@ interface GooeyNavProps {
   onIndexChange?: (index: number) => void;
 }
 
+const noise = (n = 1) => n / 2 - Math.random() * n;
+
+const getXY = (distance: number, pointIndex: number, totalPoints: number) => {
+  const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
+  return [distance * Math.cos(angle), distance * Math.sin(angle)];
+};
+
+const createParticle = (i: number, t: number, d: [number, number], r: number, count: number, colorList: number[]) => {
+  const rotate = noise(r / 10);
+  return {
+    start: getXY(d[0], count - i, count),
+    end: getXY(d[1] + noise(7), count - i, count),
+    time: t,
+    scale: 1 + noise(0.2),
+    color: colorList[Math.floor(Math.random() * colorList.length)],
+    rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10
+  };
+};
+
 const GooeyNav = ({
   items,
   animationTime = 600,
@@ -35,32 +54,9 @@ const GooeyNav = ({
   const navRef = useRef<HTMLUListElement>(null);
   const filterRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
-  const [activeIndex, setActiveIndex] = useState(externalActiveIndex ?? initialActiveIndex);
-
-  useEffect(() => {
-    if (externalActiveIndex !== undefined && externalActiveIndex !== activeIndex) {
-      setActiveIndex(externalActiveIndex);
-    }
-  }, [externalActiveIndex]);
-
-  const noise = (n = 1) => n / 2 - Math.random() * n;
-
-  const getXY = (distance: number, pointIndex: number, totalPoints: number) => {
-    const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
-    return [distance * Math.cos(angle), distance * Math.sin(angle)];
-  };
-
-  const createParticle = (i: number, t: number, d: [number, number], r: number) => {
-    let rotate = noise(r / 10);
-    return {
-      start: getXY(d[0], particleCount - i, particleCount),
-      end: getXY(d[1] + noise(7), particleCount - i, particleCount),
-      time: t,
-      scale: 1 + noise(0.2),
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10
-    };
-  };
+  const [internalActiveIndex, setInternalActiveIndex] = useState(initialActiveIndex);
+  const activeIndex = externalActiveIndex !== undefined ? externalActiveIndex : internalActiveIndex;
+  const setActiveIndex = setInternalActiveIndex;
 
   const makeParticles = (element: HTMLElement) => {
     const d = particleDistances;
@@ -70,7 +66,7 @@ const GooeyNav = ({
 
     for (let i = 0; i < particleCount; i++) {
       const t = animationTime * 2 + noise(timeVariance * 2);
-      const p = createParticle(i, t, d, r);
+      const p = createParticle(i, t, d, r, particleCount, colors);
       element.classList.remove('active');
 
       setTimeout(() => {
@@ -148,17 +144,22 @@ const GooeyNav = ({
       e.preventDefault();
       const liEl = e.currentTarget.parentElement;
       if (liEl) {
-        handleClick(e as any, index);
+        handleClick(e as unknown as React.MouseEvent<HTMLAnchorElement>, index);
       }
     }
   };
 
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
-    const activeLi = navRef.current.querySelectorAll('li')[activeIndex];
+    const activeLi = activeIndex >= 0 ? navRef.current.querySelectorAll('li')[activeIndex] : undefined;
     if (activeLi) {
       updateEffectPosition(activeLi);
       textRef.current?.classList.add('active');
+    } else {
+      // No active tab (e.g. on the footer, or a page with no matching tab) —
+      // clear the lingering glow/pill instead of leaving it stuck in place.
+      textRef.current?.classList.remove('active');
+      filterRef.current?.classList.remove('active');
     }
 
     const resizeObserver = new ResizeObserver(() => {

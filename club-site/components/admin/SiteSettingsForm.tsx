@@ -92,13 +92,13 @@ export default function SiteSettingsForm({ settings }: { settings: SiteSettings 
           />
         </div>
         <div>
-          <label className="block text-xs uppercase tracking-wide text-text-muted mb-2">X / Twitter</label>
+          <label className="block text-xs uppercase tracking-wide text-text-muted mb-2">YouTube</label>
           <input
             type="url"
             value={form.x_url}
             onChange={(e) => setForm((prev) => ({ ...prev, x_url: e.target.value }))}
             className={inputClasses}
-            placeholder="https://x.com/..."
+            placeholder="https://youtube.com/@..."
           />
         </div>
       </div>

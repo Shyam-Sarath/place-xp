@@ -240,7 +240,7 @@ export default function Recruitment() {
                   followMouse
                   autoAnimate
                   speed={0.3}
-                  className="w-full"
+                  className="w-full animate-cta-glow"
                   onClick={handleApplyClick}
                 >
                   Apply Now

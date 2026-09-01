@@ -65,12 +65,29 @@ create table if not exists public.events (
   archived                boolean not null default false,
   rules                   text,
   requirements            text,
+  slot_booking_enabled    boolean not null default false,
+  meeting_link            text,
+  whatsapp_link           text,
+  instructions            text,
   created_by              uuid references public.profiles (id) on delete set null,
   created_at              timestamptz not null default now()
 );
 
 create index if not exists events_status_idx on public.events (status);
 create index if not exists events_created_by_idx on public.events (created_by);
+
+create table if not exists public.event_slots (
+  id uuid primary key default gen_random_uuid(), event_id uuid references public.events(id) on delete cascade,
+  slot_date date not null, start_time time not null, end_time time not null,
+  booked_by uuid references public.profiles(id) on delete set null, booked_at timestamptz, created_at timestamptz not null default now(),
+  unique(event_id, slot_date, start_time, end_time)
+);
+create index if not exists event_slots_event_idx on public.event_slots(event_id);
+create table if not exists public.slot_booking_settings (
+  id text primary key default 'slot_booking', title text not null default 'Recruitment Slot Booking', deadline timestamptz,
+  meeting_link text, whatsapp_link text, instructions text, updated_at timestamptz not null default now()
+);
+insert into public.slot_booking_settings (id) values ('slot_booking') on conflict (id) do nothing;
 
 -- Pre-approval list for admin signups (see step11-admin-allowlist.sql).
 -- Not reachable from the app/API — RLS on, zero policies, only the
@@ -305,6 +322,22 @@ begin
 end;
 $$ language plpgsql security definer set search_path = public;
 
+create or replace function public.book_event_slot(p_slot_id uuid)
+returns public.event_slots
+security definer
+set search_path = public
+language plpgsql
+as $func$
+declare result public.event_slots;
+begin
+  if auth.uid() is null then raise exception 'You must be logged in.'; end if;
+  if exists (select 1 from event_slots mine join event_slots target on target.event_id is not distinct from mine.event_id where target.id=p_slot_id and mine.booked_by=auth.uid()) then raise exception 'You have already booked a slot for this event.'; end if;
+  update event_slots set booked_by=auth.uid(), booked_at=now() where id=p_slot_id and booked_by is null returning * into result;
+  if result.id is null then raise exception 'This slot has already been booked. Please choose another available slot.'; end if;
+  return result;
+end;
+$func$;
+
 drop trigger if exists registrations_enforce_defaults on public.registrations;
 create trigger registrations_enforce_defaults
   before insert on public.registrations
@@ -326,6 +359,18 @@ alter table public.resources enable row level security;
 alter table public.meeting_links enable row level security;
 alter table public.faqs enable row level security;
 alter table public.event_organizers enable row level security;
+alter table public.event_slots enable row level security;
+alter table public.slot_booking_settings enable row level security;
+drop policy if exists "public read slot settings" on public.slot_booking_settings;
+create policy "public read slot settings" on public.slot_booking_settings for select using (true);
+drop policy if exists "staff manage slot settings" on public.slot_booking_settings;
+create policy "staff manage slot settings" on public.slot_booking_settings for all using (public.is_staff()) with check (public.is_staff());
+drop policy if exists "read slots" on public.event_slots;
+create policy "read slots" on public.event_slots for select using (true);
+drop policy if exists "staff manage slots" on public.event_slots;
+create policy "staff manage slots" on public.event_slots for all using (public.is_staff()) with check (public.is_staff());
+drop policy if exists "participant book slot" on public.event_slots;
+create policy "participant book slot" on public.event_slots for update using (booked_by is null and auth.uid() is not null) with check (booked_by = auth.uid());
 
 -- RLS on, deliberately zero policies attached: nothing reaches this
 -- table through the app or API, only the SQL Editor / dashboard

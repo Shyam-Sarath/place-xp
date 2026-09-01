@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, X, ArrowUpDown, Mail, Phone, Hash, GraduationCap, ExternalLink, CalendarDays } from 'lucide-react';
+import { Search, X, ArrowUpDown, Mail, Hash, GraduationCap, ExternalLink, CalendarDays } from 'lucide-react';
 import type { Profile, RegistrationWithEvent } from '@/types/database';
 
 const inputClasses =
@@ -22,7 +22,6 @@ export default function ParticipantsTable({
   registrations: RegistrationWithEvent[];
 }) {
   const [search, setSearch] = useState('');
-  const [department, setDepartment] = useState('all');
   const [year, setYear] = useState('all');
   const [sortKey, setSortKey] = useState<SortKey>('created_at');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
@@ -38,10 +37,6 @@ export default function ParticipantsTable({
     return map;
   }, [registrations]);
 
-  const departments = useMemo(
-    () => Array.from(new Set(participants.map((p) => p.department).filter(Boolean))) as string[],
-    [participants]
-  );
   const years = useMemo(
     () => Array.from(new Set(participants.map((p) => p.year).filter(Boolean))).sort() as string[],
     [participants]
@@ -50,14 +45,12 @@ export default function ParticipantsTable({
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = participants.filter((p) => {
-      if (department !== 'all' && p.department !== department) return false;
       if (year !== 'all' && p.year !== year) return false;
       if (!q) return true;
       return (
         p.full_name?.toLowerCase().includes(q) ||
         p.email?.toLowerCase().includes(q) ||
-        p.reg_no?.toLowerCase().includes(q) ||
-        p.phone?.toLowerCase().includes(q)
+        p.reg_no?.toLowerCase().includes(q)
       );
     });
 
@@ -74,7 +67,7 @@ export default function ParticipantsTable({
     });
 
     return list;
-  }, [participants, search, department, year, sortKey, sortDir, registrationsByUser]);
+  }, [participants, search, year, sortKey, sortDir, registrationsByUser]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -96,18 +89,12 @@ export default function ParticipantsTable({
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
             type="text"
-            placeholder="Search by name, email, reg. no. or phone"
+            placeholder="Search by name, email or reg. no."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={`${inputClasses} pl-10`}
           />
         </div>
-        <select value={department} onChange={(e) => setDepartment(e.target.value)} className={`${inputClasses} w-auto appearance-none`}>
-          <option value="all">All departments</option>
-          {departments.map((d) => (
-            <option key={d} value={d}>{d}</option>
-          ))}
-        </select>
         <select value={year} onChange={(e) => setYear(e.target.value)} className={`${inputClasses} w-auto appearance-none`}>
           <option value="all">All years</option>
           {years.map((y) => (
@@ -119,25 +106,24 @@ export default function ParticipantsTable({
       {/* Table */}
       {rows.length > 0 ? (
         <div className="rounded-2xl border border-border-default overflow-hidden">
+          <div className="max-h-[60vh] overflow-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-divider text-left text-xs text-text-muted">
-                <th className="px-5 py-3 font-medium">
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">
                   <button onClick={() => toggleSort('name')} className="flex items-center gap-1 hover:text-text-secondary transition-colors">
                     Name <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </th>
-                <th className="px-5 py-3 font-medium">Email</th>
-                <th className="px-5 py-3 font-medium">Reg. No.</th>
-                <th className="px-5 py-3 font-medium">Department</th>
-                <th className="px-5 py-3 font-medium">Year</th>
-                <th className="px-5 py-3 font-medium">Phone</th>
-                <th className="px-5 py-3 font-medium">
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Email</th>
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Reg. No.</th>
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">Year</th>
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">
                   <button onClick={() => toggleSort('registrations')} className="flex items-center gap-1 hover:text-text-secondary transition-colors">
                     Events <ArrowUpDown className="w-3 h-3" />
                   </button>
                 </th>
-                <th className="px-5 py-3 font-medium">
+                <th className="sticky top-0 z-10 bg-bg-card px-5 py-3 font-medium">
                   <button onClick={() => toggleSort('created_at')} className="flex items-center gap-1 hover:text-text-secondary transition-colors">
                     Joined <ArrowUpDown className="w-3 h-3" />
                   </button>
@@ -154,15 +140,14 @@ export default function ParticipantsTable({
                   <td className="px-5 py-4 font-medium text-text-primary">{p.full_name ?? '—'}</td>
                   <td className="px-5 py-4 text-text-secondary">{p.email ?? '—'}</td>
                   <td className="px-5 py-4 text-text-secondary">{p.reg_no ?? '—'}</td>
-                  <td className="px-5 py-4 text-text-muted">{p.department ?? '—'}</td>
                   <td className="px-5 py-4 text-text-muted">{p.year ?? '—'}</td>
-                  <td className="px-5 py-4 text-text-muted">{p.phone ?? '—'}</td>
                   <td className="px-5 py-4 text-text-secondary">{registrationsByUser.get(p.id)?.length ?? 0}</td>
                   <td className="px-5 py-4 text-text-muted text-xs">{formatDate(p.created_at)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <div className="rounded-2xl border border-dashed border-border-default py-16 text-center">
@@ -192,9 +177,8 @@ export default function ParticipantsTable({
 
             <div className="grid grid-cols-2 gap-3 mb-6 text-sm">
               <div className="flex items-center gap-2 text-text-secondary"><Mail className="w-3.5 h-3.5 text-text-muted shrink-0" /> {openParticipant.email ?? '—'}</div>
-              <div className="flex items-center gap-2 text-text-secondary"><Phone className="w-3.5 h-3.5 text-text-muted shrink-0" /> {openParticipant.phone ?? '—'}</div>
               <div className="flex items-center gap-2 text-text-secondary"><Hash className="w-3.5 h-3.5 text-text-muted shrink-0" /> {openParticipant.reg_no ?? '—'}</div>
-              <div className="flex items-center gap-2 text-text-secondary"><GraduationCap className="w-3.5 h-3.5 text-text-muted shrink-0" /> {openParticipant.department ?? '—'} {openParticipant.year ? `· Year ${openParticipant.year}` : ''}{openParticipant.section ? ` · Sec ${openParticipant.section}` : ''}</div>
+              <div className="flex items-center gap-2 text-text-secondary"><GraduationCap className="w-3.5 h-3.5 text-text-muted shrink-0" /> {openParticipant.year ? `Year ${openParticipant.year}` : '—'}{openParticipant.section ? ` · Sec ${openParticipant.section}` : ''}</div>
             </div>
 
             <h4 className="text-xs uppercase tracking-wide text-text-muted mb-3">

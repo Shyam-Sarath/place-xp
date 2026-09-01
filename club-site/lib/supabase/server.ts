@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 
 if (typeof globalThis.WebSocket === 'undefined') {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- must load synchronously in Node-only server runtimes; a static import would break edge runtimes and a dynamic import() would resolve too late for this check
     globalThis.WebSocket = require('ws');
   } catch {
     // ignore

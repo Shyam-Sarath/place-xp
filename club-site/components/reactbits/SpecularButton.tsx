@@ -112,10 +112,12 @@ export default function SpecularButton({
   const propsRef = useRef<Record<string, unknown>>({});
   const isPressedRef = useRef(false);
 
-  propsRef.current = {
-    radius, lineColor, baseColor, intensity, shineSize, shineFade,
-    thickness, speed, followMouse, proximity, autoAnimate,
-  };
+  useEffect(() => {
+    propsRef.current = {
+      radius, lineColor, baseColor, intensity, shineSize, shineFade,
+      thickness, speed, followMouse, proximity, autoAnimate,
+    };
+  });
 
   useEffect(() => {
     const btn = btnRef.current;
